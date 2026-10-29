@@ -122,7 +122,6 @@ python manage.py seed_data
 
 Default Administrator Credentials:
 - **Username:** `admin`
-- **Password:** `adminpassword123`
 - **Admin Panel URL:** `http://127.0.0.1:8000/admin/`
 
 ### 4. Run Automated Test Suite
