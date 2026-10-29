@@ -1,0 +1,465 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="flex flex-col w-full">
+  <div class="max-w-[1320px] mx-auto w-full px-gutter-mobile lg:px-margin py-space-lg lg:py-space-xl">
+
+    <!-- Top Stepper / Visual Progress Ribbon -->
+    <div class="mb-space-xl flex flex-col md:flex-row md:items-center justify-between gap-space-md bg-surface-container-low p-space-md lg:p-space-lg rounded-2xl shadow-sm">
+      <div class="flex flex-col">
+        <div class="flex items-center gap-space-xs mb-1">
+          <span class="font-label-caps text-label-caps text-primary tracking-widest uppercase">Atelier Concierge Checkout</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+          <span class="font-label-caps text-label-caps text-secondary">PKR Domestic Fulfillment</span>
+        </div>
+        <h1 class="font-headline-xl text-headline-md lg:text-headline-xl text-on-surface">Boutique Checkout &amp; Delivery</h1>
+      </div>
+
+      <!-- 3-Step Indicator -->
+      <nav aria-label="Checkout Progress" class="flex items-center gap-space-sm sm:gap-space-md">
+        <div class="flex items-center gap-space-xs">
+          <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md font-bold shadow-sm">1</div>
+          <span class="font-label-lg text-label-lg text-on-surface font-semibold hidden sm:inline">Review</span>
+        </div>
+        <span class="w-6 h-0.5 bg-primary-container"></span>
+        <div class="flex items-center gap-space-xs">
+          <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md font-bold shadow-sm">2</div>
+          <span class="font-label-lg text-label-lg text-on-surface font-semibold hidden sm:inline">Recipient &amp; Card</span>
+        </div>
+        <span class="w-6 h-0.5 bg-primary-container"></span>
+        <div class="flex items-center gap-space-xs">
+          <div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md font-semibold shadow-sm">3</div>
+          <span class="font-label-lg text-label-lg text-on-surface font-semibold hidden sm:inline">Payment</span>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Main Checkout Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg xl:gap-space-xl items-start">
+      <!-- LEFT COLUMN: Fulfillment & Customer Forms (7 Cols) -->
+      <form class="lg:col-span-7 flex flex-col gap-space-xl" id="checkout-form" method="POST" action="{% url 'cart_checkout' %}">
+        {% csrf_token %}
+
+        <!-- STEP 1: Sender / Customer Information -->
+        <section class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col gap-space-md relative overflow-hidden">
+          <div class="flex items-center justify-between border-none pb-1">
+            <div class="flex items-center gap-space-sm">
+              <span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-label-caps text-label-caps font-bold">01</span>
+              <h2 class="font-headline-sm text-headline-sm text-on-surface">Sender &amp; Contact Details</h2>
+            </div>
+            <span class="font-label-caps text-label-caps text-secondary uppercase tracking-wider">Order Updates</span>
+          </div>
+          <p class="font-body-sm text-body-sm text-on-surface-variant -mt-2">
+            You will receive tracking confirmations and receipt updates via WhatsApp and email.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md pt-2">
+            <div class="flex flex-col gap-1 sm:col-span-2">
+              <label class="font-label-md text-label-md text-on-surface font-semibold" for="sender_name">Your Full Name</label>
+              <input class="bg-surface-container-low px-space-md py-space-sm rounded-full text-on-surface font-body-md focus:bg-surface-container-lowest focus:outline-none transition-all placeholder:text-on-surface-variant/40" id="sender_name" name="customer_name" placeholder="e.g. Sana Tariq" required="" type="text" value="{% if sender_name %}{{ sender_name }}{% elif user.is_authenticated %}{{ user.get_full_name|default:user.username }}{% else %}Sana Tariq{% endif %}"/>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="font-label-md text-label-md text-on-surface font-semibold" for="sender_email">Email Address</label>
+              <input class="bg-surface-container-low px-space-md py-space-sm rounded-full text-on-surface font-body-md focus:bg-surface-container-lowest focus:outline-none transition-all placeholder:text-on-surface-variant/40" id="sender_email" name="customer_email" placeholder="name@domain.com" required="" type="email" value="{% if sender_email %}{{ sender_email }}{% elif user.is_authenticated %}{{ user.email }}{% else %}sana.tariq@gmail.com{% endif %}"/>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="font-label-md text-label-md text-on-surface font-semibold" for="sender_phone">WhatsApp / Mobile (Pakistan)</label>
+              <div class="flex items-center bg-surface-container-low rounded-full px-space-md py-space-sm focus-within:bg-surface-container-lowest transition-all">
+                <span class="font-label-md text-label-md text-primary font-bold pr-2">🇵🇰 +92</span>
+                <input class="w-full bg-transparent text-on-surface font-body-md focus:outline-none placeholder:text-on-surface-variant/40" id="sender_phone" name="customer_phone" placeholder="3XX XXXXXXX" required="" type="tel" value="{% if sender_phone %}{{ sender_phone }}{% else %}301 8492041{% endif %}"/>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 2: Recipient Details, Surprise Gifting & Handwritten Card -->
+        <section class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col gap-space-lg">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-space-sm">
+              <span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-label-caps text-label-caps font-bold">02</span>
+              <h2 class="font-headline-sm text-headline-sm text-on-surface">Recipient &amp; Custom Card Note</h2>
+            </div>
+            <span class="material-symbols-outlined text-primary text-[22px]">mark_email_read</span>
+          </div>
+
+          <!-- Surprise Gifting Callout / Toggle -->
+          <div class="bg-surface-container-low p-space-md rounded-xl flex items-start gap-space-sm shadow-sm cursor-pointer select-none" onclick="const chk = document.getElementById('surprise-checkbox'); chk.checked = !chk.checked;">
+            <input checked="" class="mt-1 accent-primary w-4 h-4 cursor-pointer rounded" id="surprise-checkbox" name="is_surprise_gift" onclick="event.stopPropagation();" type="checkbox"/>
+            <div class="flex flex-col">
+              <span class="font-label-lg text-label-lg text-on-surface font-bold flex items-center gap-1.5">
+                <span>This order is a surprise gift sent directly to the recipient</span>
+                <span class="material-symbols-outlined text-primary text-[18px]">celebration</span>
+              </span>
+              <span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                Prices, billing receipts, and invoices will be completely hidden. The keepsake box will arrive wrapped with satin ribbon and an authentic wax seal.
+              </span>
+            </div>
+          </div>
+
+          <!-- Recipient Delivery Address Fields -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+            <div class="flex flex-col gap-1 sm:col-span-2">
+              <label class="font-label-md text-label-md text-on-surface font-semibold" for="recipient_name">Recipient's Full Name</label>
+              <input class="bg-surface-container-low px-space-md py-space-sm rounded-full text-on-surface font-body-md focus:bg-surface-container-lowest focus:outline-none transition-all" id="recipient_name" name="recipient_name" placeholder="Recipient's Name" required="" type="text" value="Areeba Malik"/>
+            </div>
+
+            <div class="flex flex-col gap-1 sm:col-span-2">
+              <label class="font-label-md text-label-md text-on-surface font-semibold" for="recipient_address">Street Address / House / Sector</label>
+              <input class="bg-surface-container-low px-space-md py-space-sm rounded-full text-on-surface font-body-md focus:bg-surface-container-lowest focus:outline-none transition-all" id="recipient_address" name="recipient_address" placeholder="Complete residential or office address" required="" type="text" value="House 14-B, Street 7, Sector F-8/2"/>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="font-label-md text-label-md text-on-surface font-semibold" for="recipient_city">City (Pakistan)</label>
+              <div class="relative">
+                <select class="w-full bg-surface-container-low px-space-md py-space-sm rounded-full text-on-surface font-body-md appearance-none focus:bg-surface-container-lowest focus:outline-none transition-all cursor-pointer" id="recipient_city" name="recipient_city">
+                  <option selected="" value="Islamabad">Islamabad</option>
+                  <option value="Rawalpindi">Rawalpindi</option>
+                  <option value="Lahore">Lahore</option>
+                  <option value="Karachi">Karachi</option>
+                  <option value="Faisalabad">Faisalabad</option>
+                  <option value="Multan">Multan</option>
+                  <option value="Peshawar">Peshawar</option>
+                  <option value="Quetta">Quetta</option>
+                  <option value="Sialkot">Sialkot</option>
+                  <option value="Gujranwala">Gujranwala</option>
+                  <option value="Other">Other City</option>
+                </select>
+                <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant text-[20px]">expand_more</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-1">
+              <label class="font-label-md text-label-md text-on-surface font-semibold" for="recipient_postal">Postal Code</label>
+              <input class="bg-surface-container-low px-space-md py-space-sm rounded-full text-on-surface font-body-md focus:bg-surface-container-lowest focus:outline-none transition-all" id="recipient_postal" name="recipient_postal" placeholder="e.g. 44000" type="text" value="44000"/>
+            </div>
+          </div>
+
+          <!-- Bespoke Handwritten Note Inset -->
+          <div class="bg-surface-container rounded-2xl p-space-md lg:p-space-lg flex flex-col gap-space-sm relative">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-space-xs">
+                <span class="material-symbols-outlined text-primary text-[20px]">draw</span>
+                <span class="font-headline-sm text-headline-sm text-on-surface">Complimentary Handwritten Card</span>
+              </div>
+              <span class="bg-primary-fixed text-on-primary-fixed px-space-sm py-0.5 rounded-full font-label-caps text-label-caps">Includes Wax Seal</span>
+            </div>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">
+              Every curated box is sealed with our signature metallic blush wax crest. Write your heartfelt message below and our in-house calligrapher will ink it by hand.
+            </p>
+            <div class="relative bg-surface-container-lowest rounded-xl p-space-md shadow-sm">
+              <div class="absolute top-3 right-3 w-8 h-8 rounded-full bg-primary-container/20 flex items-center justify-center">
+                <span class="font-headline-sm text-headline-sm text-primary italic font-serif">S</span>
+              </div>
+              <textarea class="w-full bg-transparent text-on-surface font-headline-sm text-headline-sm italic resize-none focus:outline-none placeholder:text-on-surface-variant/40 pr-10" id="card_message" name="card_message" placeholder="Write your personal message..." rows="4">Dearest Areeba, Happy 25th Birthday to my favorite soul sister! Wishing you a year filled with happiness, peace, and endless adventures. Love always, Sana x</textarea>
+              <div class="flex items-center justify-between pt-2">
+                <span class="font-label-caps text-label-caps text-secondary font-medium">Card: Gold Foil Embossed Parchment</span>
+                <span class="font-label-caps text-label-caps text-on-surface-variant">Hand-inscribed by calligrapher</span>
+              </div>
+            </div>
+
+            <!-- Delivery Instructions -->
+            <div class="flex flex-col gap-1 pt-space-xs">
+              <label class="font-label-md text-label-md text-on-surface font-semibold" for="delivery_notes">Special Delivery Instructions for Courier Rider</label>
+              <input class="bg-surface-container-lowest px-space-md py-space-sm rounded-full text-on-surface font-body-sm focus:outline-none shadow-sm" id="delivery_notes" name="delivery_instructions" placeholder="Gate code, quiet delivery, or preferred delivery window" type="text" value="Please ring bell quietly and deliver before 6 PM."/>
+            </div>
+          </div>
+        </section>
+
+        <!-- STEP 3: Payment Method (Tailored for Pakistan) -->
+        <section class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col gap-space-md">
+          <div class="flex items-center justify-between pb-1">
+            <div class="flex items-center gap-space-sm">
+              <span class="w-7 h-7 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-label-caps text-label-caps font-bold">03</span>
+              <h2 class="font-headline-sm text-headline-sm text-on-surface">Select Payment Method</h2>
+            </div>
+            <span class="font-label-caps text-label-caps text-primary uppercase font-bold tracking-wider">Zero Extra Fees</span>
+          </div>
+
+          <!-- Radio Group for Pakistani Payment Options -->
+          <div class="flex flex-col gap-space-sm" id="payment-options">
+            <!-- OPTION A: COD -->
+            <label class="payment-card relative flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-low cursor-pointer transition-all hover:bg-surface-container">
+              <input checked="" class="mt-1 accent-primary w-4 h-4 cursor-pointer" name="payment_method" onchange="updatePaymentMethod('cod')" type="radio" value="cod"/>
+              <div class="flex flex-col flex-1">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="font-label-lg text-label-lg text-on-surface font-bold">Cash on Delivery (COD)</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed px-space-sm py-0.5 rounded-full font-label-caps text-label-caps font-bold">Most Popular</span>
+                  </div>
+                  <span class="font-label-caps text-label-caps text-secondary font-semibold">Doorstep Cash Handling</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                  Pay courier upon doorstep arrival anywhere across Pakistan (TCS / Leopards Courier). Inspect packaging seal before handing over cash.
+                </p>
+              </div>
+            </label>
+
+            <!-- OPTION B: Direct Bank Transfer / Raast -->
+            <label class="payment-card relative flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-low cursor-pointer transition-all hover:bg-surface-container">
+              <input class="mt-1 accent-primary w-4 h-4 cursor-pointer" name="payment_method" onchange="updatePaymentMethod('bank')" type="radio" value="bank"/>
+              <div class="flex flex-col flex-1">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="font-label-lg text-label-lg text-on-surface font-bold">Direct Bank Transfer / Raast Instant</span>
+                    <span class="bg-secondary-container text-on-secondary-container px-space-sm py-0.5 rounded-full font-label-caps text-label-caps">Zero Surcharge</span>
+                  </div>
+                  <span class="font-label-caps text-label-caps text-primary font-bold">Meezan • HBL • Raast</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                  Transfer seamlessly via your Pakistani mobile banking app. Share transfer screenshot with our WhatsApp concierge for instant dispatch.
+                </p>
+                <!-- Expanded Bank Details Box -->
+                <div class="hidden mt-space-sm p-space-md bg-surface-container rounded-xl flex flex-col gap-space-xs font-body-sm" id="bank-details-drawer">
+                  <div class="flex justify-between">
+                    <span class="text-on-surface-variant">Account Title:</span>
+                    <span class="font-semibold text-on-surface">Tiny Treasure Co. Atelier</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-on-surface-variant">Bank Name:</span>
+                    <span class="font-semibold text-on-surface">Meezan Bank Limited (F-8 Islamabad)</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-on-surface-variant">IBAN Number:</span>
+                    <span class="font-mono text-on-surface text-[12px] bg-surface-container-lowest px-2 py-0.5 rounded">PK12MEZN0001090283748291</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-on-surface-variant">Raast ID (Phone):</span>
+                    <span class="font-semibold text-primary">03001234567</span>
+                  </div>
+                </div>
+              </div>
+            </label>
+
+            <!-- OPTION C: Online Debit / Credit Simulation -->
+            <label class="payment-card relative flex items-start gap-space-md p-space-md rounded-xl bg-surface-container-low cursor-pointer transition-all hover:bg-surface-container">
+              <input class="mt-1 accent-primary w-4 h-4 cursor-pointer" name="payment_method" onchange="updatePaymentMethod('online')" type="radio" value="online"/>
+              <div class="flex flex-col flex-1">
+                <div class="flex items-center justify-between flex-wrap gap-2">
+                  <div class="flex items-center gap-2">
+                    <span class="font-label-lg text-label-lg text-on-surface font-bold">Debit / Credit Card &amp; Digital Wallets</span>
+                  </div>
+                  <span class="bg-surface-container text-on-surface-variant px-space-sm py-0.5 rounded-full font-label-caps text-label-caps">Sandbox Demo</span>
+                </div>
+                <p class="font-body-sm text-body-sm text-on-surface-variant mt-1">
+                  Demonstration card checkout. Verified server-side order recording with Cash on Delivery recommended for active dispatch.
+                </p>
+              </div>
+            </label>
+          </div>
+        </section>
+      </form>
+
+      <!-- RIGHT COLUMN: Order Summary & Review Basket (5 Cols) -->
+      <aside class="lg:col-span-5 flex flex-col gap-space-lg lg:sticky lg:top-24">
+        <!-- Luxury Basket Card -->
+        <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex flex-col gap-space-md relative overflow-hidden">
+          <div class="flex items-center justify-between">
+            <h2 class="font-headline-sm text-headline-sm text-on-surface">Curated Gift Basket</h2>
+            <span class="bg-primary-fixed text-on-primary-fixed font-label-caps text-label-caps px-space-sm py-0.5 rounded-full" id="basket-badge-count">
+              {{ cart_items.count }} Custom Box{{ cart_items.count|pluralize:"es" }}
+            </span>
+          </div>
+
+          <!-- Dynamic Cart Items Loop -->
+          <div class="space-y-space-sm max-h-[380px] overflow-y-auto pr-1" id="cart-items-container">
+            {% for item in cart_items %}
+              <div class="flex gap-space-md p-space-sm bg-surface-container-low rounded-xl items-center relative group" id="cart-item-row-{{ item.id }}">
+                <img class="w-20 h-20 rounded-lg object-cover flex-shrink-0 shadow-sm" src="{{ item.get_display_image }}" alt="{{ item.get_display_title }}"/>
+                <div class="flex flex-col flex-1 min-w-0">
+                  <div class="flex items-start justify-between gap-1">
+                    <span class="font-headline-sm text-headline-sm text-on-surface truncate">{{ item.get_display_title }}</span>
+                    <span class="font-label-lg text-label-lg text-primary font-bold whitespace-nowrap" id="item-subtotal-{{ item.id }}">
+                      PKR {{ item.get_subtotal|floatformat:0 }}
+                    </span>
+                  </div>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">
+                    {{ item.get_display_subtitle }}
+                  </p>
+
+                  <div class="flex items-center justify-between pt-2">
+                    <!-- Quantity controls -->
+                    <div class="flex items-center gap-2 bg-surface-container-lowest px-2 py-0.5 rounded-full border border-surface-container">
+                      <button type="button" onclick="modifyCartItem({{ item.id }}, 'decrease')" class="text-on-surface-variant hover:text-primary font-bold text-sm px-1">
+                        -
+                      </button>
+                      <span class="font-label-caps text-on-surface font-semibold text-xs" id="item-qty-{{ item.id }}">
+                        {{ item.quantity }}
+                      </span>
+                      <button type="button" onclick="modifyCartItem({{ item.id }}, 'increase')" class="text-on-surface-variant hover:text-primary font-bold text-sm px-1">
+                        +
+                      </button>
+                    </div>
+
+                    <div class="flex items-center gap-space-sm text-primary font-label-md text-label-md">
+                      <button type="button" onclick="modifyCartItem({{ item.id }}, 'remove')" class="hover:text-error opacity-80 hover:opacity-100 text-xs">
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            {% empty %}
+              <div class="text-center py-8">
+                <span class="material-symbols-outlined text-[36px] text-primary/60">shopping_basket</span>
+                <p class="font-body-md text-on-surface font-semibold mt-2">Your basket is currently empty.</p>
+                <p class="font-body-sm text-on-surface-variant mt-1">Choose from our signature catalog or customize a bespoke box.</p>
+                <a href="{% url 'shop' %}" class="inline-block mt-3 bg-primary text-on-primary font-label-md text-label-md px-5 py-2 rounded-full font-semibold">
+                  Browse Gift Edits
+                </a>
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- Included Complimentary Atelier Perks -->
+          <div class="flex flex-col gap-space-xs bg-surface-container p-space-md rounded-xl text-body-sm font-body-sm">
+            <div class="flex items-center justify-between text-on-surface">
+              <span class="flex items-center gap-1.5 font-semibold">
+                <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+                Double-Faced Satin Ribbon &amp; Luxury Box
+              </span>
+              <span class="font-label-caps text-label-caps text-primary font-bold">FREE</span>
+            </div>
+            <div class="flex items-center justify-between text-on-surface">
+              <span class="flex items-center gap-1.5 font-semibold">
+                <span class="material-symbols-outlined text-primary text-[18px]">favorite</span>
+                Calligraphy Note &amp; Custom Wax Seal
+              </span>
+              <span class="font-label-caps text-label-caps text-primary font-bold">FREE</span>
+            </div>
+          </div>
+
+          <!-- Price Calculation & Totals -->
+          <div class="flex flex-col gap-2 pt-2">
+            <div class="flex items-center justify-between font-body-md text-body-md text-on-surface-variant">
+              <span>Items Subtotal</span>
+              <span class="text-on-surface font-semibold" id="checkout-subtotal">PKR {{ cart_subtotal|floatformat:0 }}</span>
+            </div>
+            <div class="flex items-center justify-between font-body-md text-body-md text-on-surface-variant">
+              <span class="flex items-center gap-1">
+                <span>Express Courier Shipping (Pakistan)</span>
+                <span class="material-symbols-outlined text-primary text-[16px]">local_shipping</span>
+              </span>
+              <span class="text-primary font-semibold font-label-caps text-label-caps bg-primary-fixed px-2 py-0.5 rounded-full" id="checkout-shipping">
+                {% if cart_subtotal >= 3000 %}FREE (Above Rs 3,000){% else %}PKR 250{% endif %}
+              </span>
+            </div>
+
+            <!-- Accent Total Banner -->
+            <div class="bg-surface-container-high p-space-md rounded-xl flex flex-col gap-1 mt-2">
+              <div class="flex items-baseline justify-between">
+                <span class="font-headline-sm text-headline-sm text-on-surface">Total Payable</span>
+                <div class="flex flex-col items-end">
+                  <span class="font-headline-xl text-headline-md lg:text-headline-xl text-primary font-bold" id="checkout-total">
+                    PKR {{ cart_total|floatformat:0 }}
+                  </span>
+                </div>
+              </div>
+              <span class="font-label-caps text-label-caps text-secondary uppercase tracking-widest text-right">
+                All taxes & packaging included
+              </span>
+            </div>
+          </div>
+
+          <!-- Master Order Submit CTA Button -->
+          <button class="w-full bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-lg text-label-lg py-space-md rounded-full font-bold shadow-md hover:shadow-xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 cursor-pointer" form="checkout-form" id="submit-order-button" type="submit">
+            <span class="material-symbols-outlined text-[20px]">local_mall</span>
+            <span id="cta-button-text">CONFIRM ORDER VIA CASH ON DELIVERY</span>
+          </button>
+
+          <!-- Security & Trust Pillars -->
+          <div class="grid grid-cols-2 gap-space-sm pt-space-xs text-on-surface-variant font-label-md text-label-md">
+            <div class="flex items-center gap-2 bg-surface-container-low p-space-sm rounded-lg">
+              <span class="material-symbols-outlined text-primary text-[20px]">verified_user</span>
+              <span>100% Protected Checkout</span>
+            </div>
+            <div class="flex items-center gap-2 bg-surface-container-low p-space-sm rounded-lg">
+              <span class="material-symbols-outlined text-primary text-[20px]">inventory_2</span>
+              <span>Fragile Care Packaging</span>
+            </div>
+          </div>
+
+          <!-- WhatsApp Direct Help Ribbon -->
+          <a class="flex items-center justify-between p-space-sm bg-surface-container rounded-xl text-on-surface hover:text-primary transition-colors" href="https://wa.me/923001234567" rel="noopener noreferrer" target="_blank">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary text-[20px]">chat</span>
+              <span class="font-body-sm text-body-sm font-semibold">Need special delivery timing or assistance?</span>
+            </div>
+            <span class="font-label-caps text-label-caps text-primary underline">WhatsApp Us</span>
+          </a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function updatePaymentMethod(type) {
+    const ctaText = document.getElementById('cta-button-text');
+    const bankDrawer = document.getElementById('bank-details-drawer');
+
+    if (type === 'cod') {
+      ctaText.textContent = 'CONFIRM ORDER VIA CASH ON DELIVERY';
+      bankDrawer.classList.add('hidden');
+    } else if (type === 'bank') {
+      ctaText.textContent = 'I HAVE TRANSFERRED (CONFIRM VIA RAAST / IBAN)';
+      bankDrawer.classList.remove('hidden');
+    } else if (type === 'online') {
+      ctaText.textContent = 'PAY SECURELY VIA CARD / NAYAPAY (DEMO)';
+      bankDrawer.classList.add('hidden');
+    }
+  }
+
+  function modifyCartItem(itemId, action) {
+    const formData = new FormData();
+    formData.append('cart_item_id', itemId);
+    formData.append('action', action);
+
+    fetch("{% url 'update_cart_quantity' %}", {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        // Update nav counts
+        const navCount = document.getElementById('nav-cart-count');
+        const navLabel = document.getElementById('nav-cart-items-label');
+        const navTotal = document.getElementById('nav-cart-total');
+        if (navCount) navCount.innerText = data.cart_item_count;
+        if (navLabel) navLabel.innerText = `${data.cart_item_count} items`;
+        if (navTotal) navTotal.innerText = `PKR ${parseFloat(data.cart_subtotal).toLocaleString()}`;
+
+        // Update checkout page totals
+        document.getElementById('checkout-subtotal').innerText = `PKR ${parseFloat(data.cart_subtotal).toLocaleString()}`;
+        document.getElementById('checkout-shipping').innerText = parseFloat(data.cart_shipping) === 0 ? 'FREE (Above Rs 3,000)' : `PKR ${data.cart_shipping}`;
+        document.getElementById('checkout-total').innerText = `PKR ${parseFloat(data.cart_total).toLocaleString()}`;
+
+        if (action === 'remove' || (action === 'decrease' && data.item_subtotal === '0.00')) {
+          const row = document.getElementById(`cart-item-row-${itemId}`);
+          if (row) row.remove();
+          if (data.cart_item_count === 0) {
+            window.location.reload();
+          }
+        } else {
+          const qtyEl = document.getElementById(`item-qty-${itemId}`);
+          const subtotalEl = document.getElementById(`item-subtotal-${itemId}`);
+          if (subtotalEl) subtotalEl.innerText = `PKR ${parseFloat(data.item_subtotal).toLocaleString()}`;
+          if (qtyEl) {
+            let current = parseInt(qtyEl.innerText);
+            qtyEl.innerText = action === 'increase' ? current + 1 : current - 1;
+          }
+        }
+      }
+    })
+    .catch(err => console.error(err));
+  }
+</script>
+{% endblock %}

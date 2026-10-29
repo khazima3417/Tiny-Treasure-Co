@@ -1,0 +1,377 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="flex flex-col w-full">
+  <!-- Top Editorial Header & Storytelling Banner -->
+  <section class="relative overflow-hidden bg-surface-container-low px-gutter-mobile lg:px-margin py-space-xl">
+    <div class="max-w-[1320px] mx-auto flex flex-col md:flex-row items-start md:items-end justify-between gap-space-lg relative z-10">
+      <div class="max-w-2xl space-y-space-sm">
+        <div class="inline-flex items-center gap-space-xs bg-surface-container px-space-md py-space-xs rounded-full">
+          <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+          <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">Bespoke Atelier Collection</span>
+        </div>
+        <h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight">Curated Gift Boxes</h1>
+        <p class="font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
+          Thoughtfully assembled and ready to delight. Each box arrives in our signature keepsake packaging with personalized wax-sealed cards, hand-tied satin ribbons, and bespoke gift tags.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-space-md bg-surface-container-lowest p-space-md rounded-lg shadow-sm">
+        <div class="w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed">
+          <span class="material-symbols-outlined text-[24px]">verified</span>
+        </div>
+        <div>
+          <p class="font-label-lg text-label-lg text-on-surface font-semibold">100% Ready-to-Gift</p>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">Includes signature keepsake rigid box</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Soft Decorative Glow -->
+    <div class="absolute -right-20 -bottom-24 w-96 h-96 rounded-full bg-primary-fixed/30 blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-20 top-0 w-80 h-80 rounded-full bg-secondary-fixed/40 blur-3xl pointer-events-none"></div>
+  </section>
+
+  <!-- Interactive Catalog Section -->
+  <section class="max-w-[1320px] mx-auto w-full px-gutter-mobile lg:px-margin py-space-xl">
+    <!-- Filter Bar & Sort Controls -->
+    <div class="space-y-space-md mb-space-xl">
+      <!-- Search Input & Quick Bar -->
+      <form method="GET" action="{% url 'shop' %}" class="flex flex-col md:flex-row items-center gap-space-sm bg-surface-container-lowest p-space-sm rounded-full shadow-sm">
+        <div class="flex items-center gap-2 flex-1 px-4 w-full">
+          <span class="material-symbols-outlined text-primary">search</span>
+          <input type="text" name="q" value="{{ search_query }}" placeholder="Search gifts by name, contents, or occasion..." class="w-full bg-transparent text-on-surface font-body-md focus:outline-none"/>
+          {% if search_query %}
+            <a href="{% url 'shop' %}" class="text-on-surface-variant hover:text-error text-sm">Clear</a>
+          {% endif %}
+        </div>
+        <button type="submit" class="bg-primary text-on-primary px-6 py-2 rounded-full font-label-md font-semibold hover:bg-on-primary-fixed-variant transition-colors w-full md:w-auto">
+          Search
+        </button>
+      </form>
+
+      <!-- Occasions Ribbon -->
+      <div class="flex items-center justify-between flex-wrap gap-space-md">
+        <div class="flex items-center gap-space-xs overflow-x-auto pb-space-xs no-scrollbar w-full lg:w-auto" id="occasionFilters">
+          <a href="{% url 'shop' %}?price={{ active_price }}&sort={{ active_sort }}" class="px-space-md py-space-xs rounded-full font-label-md text-label-md {% if active_occasion == 'all' %}bg-primary text-on-primary{% else %}bg-surface-container hover:bg-surface-container-high text-on-surface-variant{% endif %} transition-all">
+            All Occasions
+          </a>
+          {% for cat in categories %}
+            <a href="{% url 'shop' %}?occasion={{ cat.slug }}&price={{ active_price }}&sort={{ active_sort }}" class="px-space-md py-space-xs rounded-full font-label-md text-label-md {% if active_occasion == cat.slug %}bg-primary text-on-primary{% else %}bg-surface-container hover:bg-surface-container-high text-on-surface-variant{% endif %} transition-all">
+              {{ cat.name }}
+            </a>
+          {% endfor %}
+        </div>
+
+        <!-- Sort Selector -->
+        <div class="flex items-center gap-space-sm ml-auto">
+          <span class="font-label-md text-label-md text-on-surface-variant whitespace-nowrap">Sort by:</span>
+          <div class="relative inline-block text-left">
+            <select onchange="window.location.href='?occasion={{ active_occasion }}&price={{ active_price }}&q={{ search_query }}&sort=' + this.value" class="appearance-none bg-surface-container-low hover:bg-surface-container text-on-surface font-label-md text-label-md rounded-full px-space-md py-space-xs pr-8 cursor-pointer outline-none transition-colors" id="sortSelector">
+              <option value="featured" {% if active_sort == 'featured' %}selected{% endif %}>Featured Collection</option>
+              <option value="low-high" {% if active_sort == 'low-high' %}selected{% endif %}>Price: Low to High</option>
+              <option value="high-low" {% if active_sort == 'high-low' %}selected{% endif %}>Price: High to Low</option>
+              <option value="bestseller" {% if active_sort == 'bestseller' %}selected{% endif %}>Best Sellers</option>
+            </select>
+            <span class="material-symbols-outlined text-[16px] text-on-surface-variant absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">expand_more</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Price Sub-filter & Active State Indicator -->
+      <div class="flex flex-wrap items-center justify-between gap-space-md pt-space-xs bg-surface-container-lowest/60 p-space-md rounded-lg">
+        <div class="flex items-center gap-space-xs flex-wrap">
+          <span class="font-label-caps text-label-caps uppercase text-on-surface-variant mr-space-xs">Price Range:</span>
+          <a href="{% url 'shop' %}?occasion={{ active_occasion }}&price=all&sort={{ active_sort }}&q={{ search_query }}" class="text-label-md font-label-md px-space-sm py-0.5 rounded-full {% if active_price == 'all' %}bg-primary-fixed text-on-primary-fixed{% else %}bg-surface-container hover:bg-surface-container-high text-on-surface-variant{% endif %}">
+            All Tiers
+          </a>
+          <a href="{% url 'shop' %}?occasion={{ active_occasion }}&price=under-1500&sort={{ active_sort }}&q={{ search_query }}" class="text-label-md font-label-md px-space-sm py-0.5 rounded-full {% if active_price == 'under-1500' %}bg-primary-fixed text-on-primary-fixed{% else %}bg-surface-container hover:bg-surface-container-high text-on-surface-variant{% endif %}">
+            Under PKR 1,500
+          </a>
+          <a href="{% url 'shop' %}?occasion={{ active_occasion }}&price=1500-2500&sort={{ active_sort }}&q={{ search_query }}" class="text-label-md font-label-md px-space-sm py-0.5 rounded-full {% if active_price == '1500-2500' %}bg-primary-fixed text-on-primary-fixed{% else %}bg-surface-container hover:bg-surface-container-high text-on-surface-variant{% endif %}">
+            PKR 1,500 – PKR 2,500
+          </a>
+          <a href="{% url 'shop' %}?occasion={{ active_occasion }}&price=over-2500&sort={{ active_sort }}&q={{ search_query }}" class="text-label-md font-label-md px-space-sm py-0.5 rounded-full {% if active_price == 'over-2500' %}bg-primary-fixed text-on-primary-fixed{% else %}bg-surface-container hover:bg-surface-container-high text-on-surface-variant{% endif %}">
+            PKR 2,500+
+          </a>
+        </div>
+
+        <div class="flex items-center gap-space-xs text-on-surface-variant">
+          <span class="material-symbols-outlined text-[18px] text-primary">auto_awesome</span>
+          <span class="font-label-md text-label-md font-semibold text-on-surface" id="productCounter">
+            Showing {{ products_count }} Curated Gift Box{{ products_count|pluralize:"es" }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg" id="catalogGrid">
+      {% for product in products %}
+        <article class="product-item group flex flex-col bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300">
+          <div class="relative w-full aspect-square bg-surface-container overflow-hidden">
+            <img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src="{{ product.get_image_url }}" alt="{{ product.name }}"/>
+            {% if product.tag %}
+              <div class="absolute top-space-sm left-space-sm">
+                <span class="{% if product.is_bestseller %}bg-primary-container text-on-primary-container font-bold{% else %}bg-primary text-on-primary{% endif %} font-label-caps text-label-caps uppercase px-space-sm py-1 rounded-full shadow-sm tracking-wider">
+                  {{ product.tag }}
+                </span>
+              </div>
+            {% endif %}
+            <button class="absolute bottom-space-sm right-space-sm w-10 h-10 rounded-full bg-surface/90 text-on-surface flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200 shadow-md hover:bg-primary hover:text-on-primary" onclick="openPersonalizeModal('{{ product.id }}', '{{ product.name|escapejs }}', '{{ product.price|floatformat:0 }}')" title="Quick View & Personalize">
+              <span class="material-symbols-outlined text-[20px]">visibility</span>
+            </button>
+          </div>
+
+          <div class="p-space-lg flex-1 flex flex-col justify-between space-y-space-md">
+            <div class="space-y-space-xs">
+              <div class="flex items-center justify-between text-on-surface-variant">
+                <span class="font-label-caps text-label-caps uppercase tracking-wider text-primary">
+                  {{ product.category.name|default:"Artisanal Keepsake" }}
+                </span>
+                <div class="flex items-center text-amber-600 font-label-md text-label-md gap-0.5">
+                  <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                  <span>{{ product.rating }} ({{ product.reviews_count }})</span>
+                </div>
+              </div>
+              <h3 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors">
+                <a href="{% url 'product_detail' product.slug %}">{{ product.name }}</a>
+              </h3>
+              <p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+                {{ product.short_description|default:product.description|truncatewords:20 }}
+              </p>
+            </div>
+
+            <!-- Items pills -->
+            <div class="flex flex-wrap gap-1.5 pt-space-xs">
+              {% for item in product.get_items_list|slice:":4" %}
+                <span class="bg-surface-container text-on-surface-variant font-label-md text-[11px] px-2 py-0.5 rounded-full">{{ item }}</span>
+              {% empty %}
+                <span class="bg-surface-container text-on-surface-variant font-label-md text-[11px] px-2 py-0.5 rounded-full">Keepsake Box</span>
+                <span class="bg-surface-container text-on-surface-variant font-label-md text-[11px] px-2 py-0.5 rounded-full">Handmade Card</span>
+              {% endfor %}
+            </div>
+
+            <div class="pt-space-md border-t-0 flex items-center justify-between">
+              <div class="flex flex-col">
+                <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Total Box Price</span>
+                <span class="font-headline-sm text-headline-sm text-on-surface font-semibold">PKR {{ product.price|floatformat:0 }}</span>
+              </div>
+              <button class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-md text-label-md px-space-md py-space-xs rounded-full transition-all flex items-center gap-space-xs shadow-sm" onclick="openPersonalizeModal('{{ product.id }}', '{{ product.name|escapejs }}', '{{ product.price|floatformat:0 }}')">
+                <span>Personalize &amp; Add</span>
+                <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        </article>
+      {% empty %}
+        <div class="col-span-3 text-center py-16 bg-surface-container-lowest rounded-2xl p-space-xl">
+          <span class="material-symbols-outlined text-[48px] text-primary mb-2">search_off</span>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface">No gift boxes match your selection</h3>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-1">Try clearing your filters or search keywords.</p>
+          <a href="{% url 'shop' %}" class="inline-block mt-4 bg-primary text-on-primary px-6 py-2.5 rounded-full font-label-md font-semibold">View All Gift Boxes</a>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- Interactive Personalization Drawer / Toast Modal -->
+  <div class="fixed inset-0 z-50 bg-on-surface/40 backdrop-blur-sm hidden items-center justify-center p-gutter-mobile" id="personalizeModal">
+    <div class="bg-surface-container-lowest max-w-xl w-full rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div class="bg-primary text-on-primary p-space-md flex items-center justify-between">
+        <div class="flex items-center gap-space-sm">
+          <span class="material-symbols-outlined">edit_note</span>
+          <span class="font-headline-sm text-headline-sm" id="modalBoxTitle">Personalize Your Box</span>
+        </div>
+        <button class="w-8 h-8 rounded-full hover:bg-white/20 flex items-center justify-center text-on-primary" onclick="closeModal()">
+          <span class="material-symbols-outlined text-[20px]">close</span>
+        </button>
+      </div>
+
+      <form action="{% url 'add_to_cart' %}" method="POST" class="p-space-lg space-y-space-md max-h-[75vh] overflow-y-auto">
+        {% csrf_token %}
+        <input type="hidden" name="product_id" id="modalProductId" value=""/>
+
+        <div>
+          <label class="block font-label-lg text-label-lg text-on-surface mb-space-xs">Wax Seal Color Preference</label>
+          <div class="grid grid-cols-3 gap-space-sm">
+            <label class="flex items-center gap-2 p-space-xs rounded-lg bg-surface-container cursor-pointer hover:bg-primary-fixed/50">
+              <input checked="" class="accent-primary" name="seal_color" type="radio" value="Rose Gold"/>
+              <span class="font-body-sm text-body-sm text-on-surface">Dusty Rose</span>
+            </label>
+            <label class="flex items-center gap-2 p-space-xs rounded-lg bg-surface-container cursor-pointer hover:bg-primary-fixed/50">
+              <input class="accent-primary" name="seal_color" type="radio" value="Antique Gold"/>
+              <span class="font-body-sm text-body-sm text-on-surface">Antique Gold</span>
+            </label>
+            <label class="flex items-center gap-2 p-space-xs rounded-lg bg-surface-container cursor-pointer hover:bg-primary-fixed/50">
+              <input class="accent-primary" name="seal_color" type="radio" value="Sage Green"/>
+              <span class="font-body-sm text-body-sm text-on-surface">Sage Mist</span>
+            </label>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-label-lg text-label-lg text-on-surface mb-space-xs" for="giftMessageInput">
+            Handwritten Card Message (Complimentary)
+          </label>
+          <textarea class="w-full p-space-sm rounded-lg bg-surface-container-low text-on-surface placeholder:text-on-surface-variant/50 border-0 outline-none focus:ring-2 focus:ring-primary font-body-md" id="giftMessageInput" name="card_message" placeholder="Write your heartfelt note here... We will handwrite this in custom calligraphy onto Italian deckle paper." rows="3"></textarea>
+        </div>
+
+        <div class="flex items-center justify-between p-space-sm rounded-lg bg-surface-container">
+          <div>
+            <p class="font-label-md text-label-md font-semibold text-on-surface">Need Direct Recipient Delivery?</p>
+            <p class="font-body-sm text-body-sm text-on-surface-variant">We conceal invoices and attach a 'Do Not Open Until' label</p>
+          </div>
+          <input class="w-5 h-5 accent-primary rounded" id="directRecipient" name="direct_recipient" type="checkbox"/>
+        </div>
+
+        <div class="flex items-center justify-between pt-space-sm">
+          <div>
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Subtotal</span>
+            <p class="font-headline-sm text-headline-sm text-primary font-bold" id="modalPrice">PKR 1,999</p>
+          </div>
+          <button class="bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-lg text-label-lg px-space-lg py-space-sm rounded-full transition-all shadow-md" type="submit">
+            Confirm &amp; Add to Cart
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Value Propositions Banner -->
+  <section class="bg-surface-container-low py-space-xl px-gutter-mobile lg:px-margin">
+    <div class="max-w-[1320px] mx-auto">
+      <div class="text-center max-w-xl mx-auto mb-space-xl space-y-space-xs">
+        <span class="font-label-caps text-label-caps uppercase tracking-widest text-primary">The Atelier Standard</span>
+        <h2 class="font-headline-md text-headline-md text-on-surface">Why Choose The Gift Edit?</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant">Every parcel is treated as a work of personal art, assembled with meticulous reverence.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-space-lg">
+        <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col items-center text-center space-y-space-sm">
+          <div class="w-14 h-14 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed mb-space-xs">
+            <span class="material-symbols-outlined text-[28px]">payments</span>
+          </div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface">100% Transparent Pricing</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            No hidden ribbons, crinkle fill, or unboxing surcharges. What you see is the absolute complete finished gift price.
+          </p>
+        </div>
+
+        <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col items-center text-center space-y-space-sm">
+          <div class="w-14 h-14 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed mb-space-xs">
+            <span class="material-symbols-outlined text-[28px]">history_edu</span>
+          </div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface">Complimentary Wax &amp; Calligraphy</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Every order includes our signature hand-melted botanical wax seal stamped directly over an archival deckle-edge note.
+          </p>
+        </div>
+
+        <div class="bg-surface-container-lowest p-space-lg rounded-xl shadow-sm flex flex-col items-center text-center space-y-space-sm">
+          <div class="w-14 h-14 rounded-full bg-primary-fixed flex items-center justify-center text-on-primary-fixed mb-space-xs">
+            <span class="material-symbols-outlined text-[28px]">local_shipping</span>
+          </div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface">Safe Nationwide Delivery</h3>
+          <p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+            Same-day priority dispatch in Lahore. Seamless 2-3 day tracked delivery to Karachi, Islamabad, Rawalpindi, and all major cities.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive FAQ Accordion Section -->
+  <section class="max-w-[1320px] mx-auto w-full px-gutter-mobile lg:px-margin py-space-xl">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-lg items-start">
+      <div class="lg:col-span-5 space-y-space-sm">
+        <span class="font-label-caps text-label-caps uppercase tracking-widest text-primary">Ordering &amp; Logistics</span>
+        <h2 class="font-headline-md text-headline-md text-on-surface">Frequently Asked Questions</h2>
+        <p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+          Need special coordination for an upcoming birthday or celebration? We make thoughtful gifting entirely seamless and worry-free.
+        </p>
+        <div class="pt-space-md">
+          <a class="inline-flex items-center gap-space-sm bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md px-space-md py-space-xs rounded-full transition-colors" href="https://wa.me/923001234567" target="_blank">
+            <span class="material-symbols-outlined text-[20px] text-primary">chat</span>
+            <span>Ask Concierge on WhatsApp</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 space-y-space-sm" id="faqAccordion">
+        <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm transition-all duration-200 cursor-pointer faq-item" onclick="toggleFaq(this)">
+          <div class="flex items-center justify-between">
+            <span class="font-headline-sm text-[1.125rem] text-on-surface font-semibold">Can I send the gift directly to the recipient?</span>
+            <span class="material-symbols-outlined text-primary transition-transform duration-300 faq-icon">expand_more</span>
+          </div>
+          <div class="faq-content hidden pt-space-sm text-on-surface-variant font-body-sm leading-relaxed">
+            Yes, absolutely! Over 80% of our orders are shipped straight to the recipient's doorstep. We conceal all price tags and paper invoices, ensuring the box arrives as a pure surprise with your personalized wax-sealed note on top.
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm transition-all duration-200 cursor-pointer faq-item" onclick="toggleFaq(this)">
+          <div class="flex items-center justify-between">
+            <span class="font-headline-sm text-[1.125rem] text-on-surface font-semibold">What payment methods do you accept in Pakistan?</span>
+            <span class="material-symbols-outlined text-primary transition-transform duration-300 faq-icon">expand_more</span>
+          </div>
+          <div class="faq-content hidden pt-space-sm text-on-surface-variant font-body-sm leading-relaxed">
+            We offer Cash on Delivery (COD) across Pakistan for all catalog gift boxes. If you are sending the gift directly to a friend, we accept Direct Bank Transfer via Raast Instant Pay or IBAN so you can pay seamlessly beforehand.
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm transition-all duration-200 cursor-pointer faq-item" onclick="toggleFaq(this)">
+          <div class="flex items-center justify-between">
+            <span class="font-headline-sm text-[1.125rem] text-on-surface font-semibold">How long does delivery take?</span>
+            <span class="material-symbols-outlined text-primary transition-transform duration-300 faq-icon">expand_more</span>
+          </div>
+          <div class="faq-content hidden pt-space-sm text-on-surface-variant font-body-sm leading-relaxed">
+            Boxes ordered before 2:00 PM are packed and dispatched the very same day. Deliveries within Lahore typically arrive within 24 hours, while Karachi, Islamabad, Rawalpindi, and Faisalabad arrive in 2 to 3 business days via premier couriers.
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest rounded-lg p-space-md shadow-sm transition-all duration-200 cursor-pointer faq-item" onclick="toggleFaq(this)">
+          <div class="flex items-center justify-between">
+            <span class="font-headline-sm text-[1.125rem] text-on-surface font-semibold">Will fragile items like candles and glassware arrive safely?</span>
+            <span class="material-symbols-outlined text-primary transition-transform duration-300 faq-icon">expand_more</span>
+          </div>
+          <div class="faq-content hidden pt-space-sm text-on-surface-variant font-body-sm leading-relaxed">
+            Every keepsake box is cushioned internally with high-density crinkle paper, and the entire outer rigid box is enveloped inside corrugated shock-absorbent shipping cartons. In the rare event of transit damage, we issue a prompt replacement immediately.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function openPersonalizeModal(productId, productName, price) {
+    document.getElementById('modalProductId').value = productId;
+    document.getElementById('modalBoxTitle').innerText = productName;
+    document.getElementById('modalPrice').innerText = 'PKR ' + price;
+    const modal = document.getElementById('personalizeModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('personalizeModal');
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  }
+
+  function toggleFaq(item) {
+    const content = item.querySelector('.faq-content');
+    const icon = item.querySelector('.faq-icon');
+    if (content.classList.contains('hidden')) {
+      content.classList.remove('hidden');
+      icon.style.transform = 'rotate(180deg)';
+    } else {
+      content.classList.add('hidden');
+      icon.style.transform = 'rotate(0deg)';
+    }
+  }
+</script>
+{% endblock %}

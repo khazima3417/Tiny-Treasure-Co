@@ -1,0 +1,362 @@
+{% load static %}
+<!DOCTYPE html>
+<html class="scroll-smooth" lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>{% if page_title %}{{ page_title }} | {% endif %}{{ STORE_NAME }} - {{ BRAND_NAME }}</title>
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  
+  <style>
+    @layer base {
+      html, body { margin:0; padding:0; }
+      body { overscroll-behavior:none; }
+      main > :first-child { margin-top:0!important; }
+      main > :last-child { margin-bottom:0!important; }
+    }
+    ::-webkit-scrollbar { display:none; }
+  </style>
+
+  <!-- Tailwind CDN & Matching Design Config -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed": "#eae1d8",
+            "on-primary-container": "#51272e",
+            "on-primary": "#ffffff",
+            "inverse-primary": "#f6b6bd",
+            "tertiary-fixed-dim": "#dbc0be",
+            "on-secondary-fixed": "#1f1b16",
+            "surface-variant": "#eae0de",
+            "surface-container": "#f6ecea",
+            "on-primary-fixed-variant": "#673940",
+            "surface-container-low": "#fcf1ef",
+            "on-tertiary-fixed": "#271817",
+            "surface-container-highest": "#eae0de",
+            "surface-container-lowest": "#ffffff",
+            "on-tertiary-fixed-variant": "#554241",
+            "on-surface-variant": "#514345",
+            "outline-variant": "#d5c2c3",
+            "on-primary-fixed": "#340f16",
+            "primary-fixed-dim": "#f6b6bd",
+            "on-background": "#1f1b1a",
+            "primary-container": "#c88d94",
+            "secondary-fixed-dim": "#cdc5bd",
+            "tertiary-container": "#b09795",
+            "secondary-container": "#eae1d8",
+            "surface-container-high": "#f0e6e4",
+            "surface-bright": "#fff8f6",
+            "background": "#fff8f6",
+            "error": "#ba1a1a",
+            "on-tertiary-container": "#42302f",
+            "surface-tint": "#825057",
+            "tertiary": "#6e5958",
+            "on-secondary-container": "#69635c",
+            "surface-dim": "#e2d8d6",
+            "inverse-surface": "#352f2e",
+            "primary": "#825057",
+            "secondary": "#635d57",
+            "on-secondary": "#ffffff",
+            "outline": "#837374",
+            "on-error-container": "#93000a",
+            "error-container": "#ffdad6",
+            "tertiary-fixed": "#f9dcda",
+            "inverse-on-surface": "#f9eeec",
+            "on-secondary-fixed-variant": "#4b4640",
+            "surface": "#fff8f6",
+            "on-error": "#ffffff",
+            "on-tertiary": "#ffffff",
+            "primary-fixed": "#ffd9dd",
+            "on-surface": "#1f1b1a"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "space-xl": "2.5rem",
+            "gutter": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.5rem",
+            "space-sm": "0.5rem",
+            "margin-mobile": "1.25rem",
+            "gutter-mobile": "1rem",
+            "margin": "3rem",
+            "space-md": "1rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-xl": ["Playfair Display"],
+            "label-md": ["Plus Jakarta Sans"],
+            "label-lg": ["Plus Jakarta Sans"],
+            "display-lg-mobile": ["Playfair Display"],
+            "headline-sm": ["Playfair Display"],
+            "display-lg": ["Playfair Display"],
+            "label-caps": ["Plus Jakarta Sans"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-md": ["Playfair Display"],
+            "headline-xl-mobile": ["Playfair Display"]
+          },
+          "fontSize": {
+            "body-sm": ["0.8125rem", { "lineHeight": "1.25rem", "fontWeight": "400" }],
+            "body-lg": ["1.125rem", { "lineHeight": "1.75rem", "fontWeight": "400" }],
+            "headline-xl": ["2.5rem", { "lineHeight": "3rem", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "label-md": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.06em", "fontWeight": "600" }],
+            "label-lg": ["0.875rem", { "lineHeight": "1.25rem", "letterSpacing": "0.04em", "fontWeight": "600" }],
+            "display-lg-mobile": ["2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.01em", "fontWeight": "400" }],
+            "headline-sm": ["1.25rem", { "lineHeight": "1.75rem", "fontWeight": "600" }],
+            "display-lg": ["3.5rem", { "lineHeight": "4rem", "letterSpacing": "-0.02em", "fontWeight": "400" }],
+            "label-caps": ["0.6875rem", { "lineHeight": "0.875rem", "letterSpacing": "0.12em", "fontWeight": "700" }],
+            "body-md": ["0.9375rem", { "lineHeight": "1.5rem", "fontWeight": "400" }],
+            "headline-md": ["1.75rem", { "lineHeight": "2.25rem", "fontWeight": "500" }],
+            "headline-xl-mobile": ["1.75rem", { "lineHeight": "2.25rem", "fontWeight": "500" }]
+          }
+        }
+      }
+    };
+  </script>
+</head>
+
+<body class="bg-surface font-body-md text-body-md text-on-surface antialiased min-h-screen flex flex-col selection:bg-primary-fixed selection:text-on-primary-fixed">
+
+  <!-- Header -->
+  <header class="fixed top-0 left-0 w-full z-50 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(200,141,148,0.12)]">
+    <!-- Announcement Bar -->
+    <div class="bg-primary-fixed text-on-primary-fixed px-gutter py-space-xs text-center">
+      <p class="font-label-caps text-label-caps tracking-wider uppercase flex items-center justify-center gap-space-sm">
+        <span>✨ Complimentary Wax-Sealed Handwritten Card with Every Order</span>
+        <span class="opacity-40">•</span>
+        <span>Nationwide Delivery Across Pakistan (COD Available)</span>
+      </p>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="h-20 max-w-[1320px] mx-auto px-gutter-mobile lg:px-margin flex items-center justify-between gap-space-md">
+      <!-- Logo -->
+      <div class="flex items-center gap-space-md">
+        <a class="flex items-center gap-space-sm group" href="{% url 'home' %}">
+          <img alt="The Gift Edit Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UXZe_ZS0AdWxUJi9X6V8BdSuADSMilfMe0-NRmTeEjcvKvQl32pbwWmeWZF9qsppJlYOa4VrbuWclSbpBfPLf5yZfq9X6tRkO8anT57ZsmK2zb2OHd7g4NLw1AC_271vgqJUj4888smlQei_ApL80nTvuFdEv1QtnYjjNj8g7zYVeOo5mDkDZ4W8WNPdaQdlrOTlJ4bbcD-n0fftMLQ_4CJHT8xe3ASd8nt-qrbs1NZU3pbVY6drxGKA"/>
+          <div class="flex flex-col">
+            <span class="font-headline-sm text-headline-sm tracking-tight text-on-surface group-hover:text-primary transition-colors">{{ BRAND_NAME }}</span>
+            <span class="font-label-caps text-label-caps text-on-surface-variant uppercase tracking-widest">{{ STORE_NAME }} • Bespoke Boxes</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Nav Links -->
+      <nav class="hidden xl:flex items-center gap-space-lg">
+        <a class="font-label-lg text-label-lg transition-colors {% if request.resolver_match.url_name == 'home' %}text-primary font-semibold{% else %}text-on-surface-variant hover:text-primary{% endif %}" href="{% url 'home' %}">Home</a>
+        <a class="font-label-lg text-label-lg transition-colors {% if request.resolver_match.url_name == 'shop' %}text-primary font-semibold{% else %}text-on-surface-variant hover:text-primary{% endif %}" href="{% url 'shop' %}">Shop All Gifts</a>
+        <a class="font-label-lg text-label-lg transition-colors text-on-surface-variant hover:text-primary" href="{% url 'shop' %}">Shop by Occasion</a>
+        <a class="font-label-lg text-label-lg transition-colors {% if request.resolver_match.url_name == 'customize' %}text-primary font-semibold{% else %}text-on-surface-variant hover:text-primary{% endif %}" href="{% url 'customize' %}">Customize Your Box</a>
+        <a class="font-label-lg text-label-lg transition-colors {% if request.resolver_match.url_name == 'about' %}text-primary font-semibold{% else %}text-on-surface-variant hover:text-primary{% endif %}" href="{% url 'about' %}">About Us</a>
+        <a class="font-label-lg text-label-lg transition-colors {% if request.resolver_match.url_name == 'contact' %}text-primary font-semibold{% else %}text-on-surface-variant hover:text-primary{% endif %}" href="{% url 'contact' %}">Contact</a>
+      </nav>
+
+      <!-- Right Utility Actions -->
+      <div class="flex items-center gap-space-md">
+        <div class="hidden md:flex items-center gap-space-xs bg-surface-container-low px-space-md py-space-xs rounded-full text-on-surface-variant font-label-md text-label-md">
+          <span class="font-semibold text-primary">PKR</span>
+          <span>(Rs)</span>
+        </div>
+
+        <a class="hidden 2xl:flex items-center gap-space-xs bg-surface-container-high hover:bg-primary-container hover:text-on-primary-container transition-all px-space-md py-space-xs rounded-full text-on-surface-variant font-label-md text-label-md" href="https://wa.me/923001234567" target="_blank" rel="noopener noreferrer">
+          <span class="material-symbols-outlined text-[16px] text-primary">chat</span>
+          <span>WhatsApp Concierge</span>
+        </a>
+
+        <!-- Quick Search Toggle -->
+        <a aria-label="Search Boutique" class="w-9 h-9 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" href="{% url 'shop' %}">
+          <span class="material-symbols-outlined text-[20px]">search</span>
+        </a>
+
+        <!-- Dynamic Cart Pill -->
+        <a class="flex items-center gap-space-xs bg-surface-container hover:bg-surface-container-high transition-colors pl-space-sm pr-space-md py-space-xs rounded-full text-on-surface group" href="{% url 'cart_checkout' %}">
+          <div class="w-7 h-7 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container font-label-caps text-label-caps" id="nav-cart-count">
+            {{ cart_item_count }}
+          </div>
+          <div class="flex flex-col text-left">
+            <span class="font-label-caps text-label-caps text-on-surface-variant group-hover:text-primary transition-colors" id="nav-cart-items-label">
+              {{ cart_item_count }} item{{ cart_item_count|pluralize }}
+            </span>
+            <span class="font-label-md text-label-md font-semibold text-on-surface" id="nav-cart-total">
+              PKR {{ cart_subtotal }}
+            </span>
+          </div>
+        </a>
+
+        <!-- User Profile / Account Dropdown -->
+        <div class="relative group">
+          {% if user.is_authenticated %}
+            <a class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center hover:bg-on-primary-fixed-variant transition-colors" href="{% url 'profile' %}" title="{{ user.username }}">
+              <span class="font-label-md font-bold uppercase">{{ user.username|slice:":1" }}</span>
+            </a>
+            <div class="absolute right-0 top-10 w-48 bg-surface-container-lowest rounded-xl shadow-xl py-2 hidden group-hover:block border border-outline-variant/30 z-50">
+              <div class="px-4 py-2 border-b border-surface-container">
+                <p class="font-label-sm font-semibold text-on-surface truncate">{{ user.username }}</p>
+                <p class="text-[11px] text-on-surface-variant truncate">{{ user.email }}</p>
+              </div>
+              <a class="block px-4 py-2 text-on-surface hover:bg-surface-container hover:text-primary font-body-sm transition-colors" href="{% url 'profile' %}">My Orders & Profile</a>
+              {% if user.is_staff %}
+                <a class="block px-4 py-2 text-on-surface hover:bg-surface-container hover:text-primary font-body-sm transition-colors" href="/admin/" target="_blank">Django Admin</a>
+              {% endif %}
+              <a class="block px-4 py-2 text-error hover:bg-surface-container font-body-sm transition-colors" href="{% url 'logout' %}">Sign Out</a>
+            </div>
+          {% else %}
+            <a class="w-8 h-8 rounded-full bg-surface-container hover:bg-primary hover:text-on-primary text-on-surface flex items-center justify-center transition-colors" href="{% url 'login' %}" title="Sign In / Register">
+              <span class="material-symbols-outlined text-[18px]">person</span>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Flash Messages Banner -->
+  <div class="w-full fixed top-28 z-40 px-gutter-mobile pointer-events-none">
+    <div class="max-w-xl mx-auto space-y-2 pointer-events-auto">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="p-space-md rounded-2xl shadow-lg flex items-center justify-between gap-space-sm {% if message.tags == 'error' %}bg-error-container text-on-error-container{% else %}bg-primary text-on-primary{% endif %} animate-in fade-in slide-in-from-top-4 duration-300">
+            <div class="flex items-center gap-space-sm">
+              <span class="material-symbols-outlined text-[20px]">{% if message.tags == 'error' %}error{% else %}check_circle{% endif %}</span>
+              <p class="font-label-md text-label-md">{{ message }}</p>
+            </div>
+            <button class="opacity-70 hover:opacity-100" onclick="this.parentElement.remove()" type="button">
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Main Content Block -->
+  <main class="w-full pt-20 bg-surface flex-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Floating WhatsApp Concierge Button -->
+  <aside class="fixed bottom-space-lg right-space-lg z-50 flex items-center group">
+    <div class="opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 mr-space-sm bg-surface-container-lowest text-on-surface shadow-[0_8px_24px_-4px_rgba(200,141,148,0.25)] rounded-full px-space-md py-space-xs font-label-md text-label-md whitespace-nowrap">
+      Chat with Gift Concierge (+92 300 1234567)
+    </div>
+    <a aria-label="Chat on WhatsApp" class="w-14 h-14 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-[0_12px_28px_-6px_rgba(130,80,87,0.4)] hover:bg-on-primary-fixed-variant transition-all transform hover:scale-105" href="https://wa.me/923001234567" rel="noopener noreferrer" target="_blank">
+      <span class="material-symbols-outlined text-[28px]">chat</span>
+    </a>
+  </aside>
+
+  <!-- Footer -->
+  <footer class="w-full bg-surface-container-low text-on-surface pt-space-xl pb-space-lg">
+    <div class="max-w-[1320px] mx-auto px-gutter-mobile lg:px-margin">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-space-lg mb-space-xl">
+        <div class="lg:col-span-2 pr-space-lg">
+          <div class="flex items-center gap-space-sm mb-space-md">
+            <img alt="{{ BRAND_NAME }}" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1UXZe_ZS0AdWxUJi9X6V8BdSuADSMilfMe0-NRmTeEjcvKvQl32pbwWmeWZF9qsppJlYOa4VrbuWclSbpBfPLf5yZfq9X6tRkO8anT57ZsmK2zb2OHd7g4NLw1AC_271vgqJUj4888smlQei_ApL80nTvuFdEv1QtnYjjNj8g7zYVeOo5mDkDZ4W8WNPdaQdlrOTlJ4bbcD-n0fftMLQ_4CJHT8xe3ASd8nt-qrbs1NZU3pbVY6drxGKA"/>
+            <span class="font-headline-sm text-headline-sm text-primary">{{ BRAND_NAME }}</span>
+          </div>
+          <p class="font-body-md text-body-md text-on-surface-variant max-w-md leading-relaxed mb-space-md">
+            Crafting unforgettable moments through thoughtfully personalized gift boxes in Pakistan. Hand-tied ribbons, bespoke wax seals, and curated treasures delivered to doorsteps nationwide.
+          </p>
+          <div class="inline-flex items-center gap-space-xs bg-surface-container px-space-md py-space-xs rounded-full">
+            <span class="material-symbols-outlined text-primary text-[18px]">verified</span>
+            <span class="font-label-md text-label-md text-on-surface">{{ STORE_NAME }} • Est. 2024</span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface mb-space-md">Curated Gifts</h3>
+          <ul class="space-y-space-sm font-body-sm text-body-sm text-on-surface-variant">
+            <li><a class="hover:text-primary transition-colors" href="{% url 'shop' %}">Mini Bestie Box</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'shop' %}">Birthday Surprise Box</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'shop' %}">Self-Care Gift Box</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'shop' %}">Premium Celebration Box</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'customize' %}">Build Your Own Box</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface mb-space-md">Occasions</h3>
+          <ul class="space-y-space-sm font-body-sm text-body-sm text-on-surface-variant">
+            <li><a class="hover:text-primary transition-colors" href="{% url 'shop' %}?occasion=birthdays">Birthday Celebrations</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'shop' %}?occasion=best-friends">Best Friends & Galentines</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'shop' %}?occasion=anniversaries">Anniversaries & Romance</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'shop' %}?occasion=graduations">Graduations</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'shop' %}?occasion=self-care">Self-Care & Healing</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface mb-space-md">Customer Care</h3>
+          <ul class="space-y-space-sm font-body-sm text-body-sm text-on-surface-variant">
+            <li><a class="hover:text-primary transition-colors" href="{% url 'contact' %}">FAQs & Ordering Guide</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'about' %}">Delivery & Return Policy</a></li>
+            <li><a class="hover:text-primary transition-colors" href="https://wa.me/923001234567" target="_blank">WhatsApp Order Tracking</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'contact' %}">Contact Atelier Concierge</a></li>
+            <li><a class="hover:text-primary transition-colors" href="{% url 'profile' %}">Customer Account</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Payment & Courier Ribbon -->
+      <div class="bg-surface-container rounded-lg p-space-md mb-space-lg flex flex-col md:flex-row items-center justify-between gap-space-md">
+        <div class="flex items-center gap-space-sm">
+          <span class="material-symbols-outlined text-primary text-[24px]">local_shipping</span>
+          <div class="flex flex-col">
+            <span class="font-label-lg text-label-lg text-on-surface">Payment & Delivery in Pakistan</span>
+            <span class="font-body-sm text-body-sm text-on-surface-variant">Cash on Delivery (COD) • Direct Bank Transfer (IBAN / Raast) • Nationwide Couriers (TCS / Leopards / Call Courier)</span>
+          </div>
+        </div>
+        <div class="flex items-center gap-space-sm text-on-surface-variant font-label-md text-label-md">
+          <span class="bg-surface-container-lowest px-space-sm py-space-xs rounded-full font-semibold">COD</span>
+          <span class="bg-surface-container-lowest px-space-sm py-space-xs rounded-full font-semibold">Raast</span>
+          <span class="bg-surface-container-lowest px-space-sm py-space-xs rounded-full font-semibold">TCS</span>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row items-center justify-between gap-space-sm text-center md:text-left pt-space-md text-on-surface-variant font-body-sm">
+        <p class="font-label-md text-label-md text-secondary">
+          Powered by Python & Django backend. All order calculations verified server-side.
+        </p>
+        <p class="font-label-md text-label-md">
+          © {% now "Y" %} {{ STORE_NAME }} / {{ BRAND_NAME }}. All rights reserved. Handcrafted with love in Pakistan.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Global CSRF Token Helper for AJAX -->
+  <script>
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+  </script>
+
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

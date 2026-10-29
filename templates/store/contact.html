@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-[1320px] mx-auto px-gutter-mobile lg:px-margin py-space-xl">
+  <div class="text-center max-w-xl mx-auto mb-space-xl space-y-space-xs">
+    <span class="font-label-caps text-label-caps uppercase tracking-widest text-primary font-bold">Atelier Concierge</span>
+    <h1 class="font-headline-xl text-headline-xl text-on-surface">Get in Touch with Us</h1>
+    <p class="font-body-md text-body-md text-on-surface-variant">
+      Have a question about custom hampers, corporate orders, or specific delivery timings across Pakistan? We are here to assist.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+    <!-- Contact Info Cards -->
+    <div class="lg:col-span-5 space-y-space-md">
+      <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex items-start gap-space-md">
+        <div class="w-12 h-12 rounded-full bg-primary-fixed text-primary flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-[24px]">chat</span>
+        </div>
+        <div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface">WhatsApp Concierge</h3>
+          <p class="font-body-sm text-on-surface-variant mt-1">Instant support for custom requests & urgent dispatches.</p>
+          <a href="https://wa.me/923001234567" target="_blank" class="inline-block mt-2 font-label-md font-bold text-primary hover:underline">
+            +92 300 1234567
+          </a>
+        </div>
+      </div>
+
+      <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex items-start gap-space-md">
+        <div class="w-12 h-12 rounded-full bg-primary-fixed text-primary flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-[24px]">mail</span>
+        </div>
+        <div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface">Email Inquiries</h3>
+          <p class="font-body-sm text-on-surface-variant mt-1">Send us corporate, bridesmaid hamper, or PR briefs.</p>
+          <a href="mailto:concierge@tinytreasure.pk" class="inline-block mt-2 font-label-md font-bold text-primary hover:underline">
+            concierge@tinytreasure.pk
+          </a>
+        </div>
+      </div>
+
+      <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm flex items-start gap-space-md">
+        <div class="w-12 h-12 rounded-full bg-primary-fixed text-primary flex items-center justify-center flex-shrink-0">
+          <span class="material-symbols-outlined text-[24px]">location_on</span>
+        </div>
+        <div>
+          <h3 class="font-headline-sm text-headline-sm text-on-surface">Atelier Studio</h3>
+          <p class="font-body-sm text-on-surface-variant mt-1">Sector F-8/2, Islamabad, Pakistan</p>
+          <p class="font-label-caps text-secondary text-xs uppercase mt-1">Studio Visits by Appointment Only</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Form (Database Backed) -->
+    <div class="lg:col-span-7">
+      <div class="bg-surface-container-lowest p-space-lg lg:p-space-xl rounded-2xl shadow-md border border-outline-variant/30">
+        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-space-sm">Send Our Atelier a Message</h2>
+        <p class="font-body-sm text-on-surface-variant mb-space-lg">Fill out the form below and we will save your message in our concierge database.</p>
+
+        <form action="{% url 'contact' %}" method="POST" class="space-y-space-md">
+          {% csrf_token %}
+          <div>
+            <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_name">Full Name</label>
+            {{ form.name }}
+            {{ form.name.errors }}
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+            <div>
+              <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_email">Email Address</label>
+              {{ form.email }}
+              {{ form.email.errors }}
+            </div>
+            <div>
+              <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_phone">Phone / WhatsApp</label>
+              {{ form.phone }}
+              {{ form.phone.errors }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_subject">Subject</label>
+            {{ form.subject }}
+            {{ form.subject.errors }}
+          </div>
+
+          <div>
+            <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_message">Message</label>
+            {{ form.message }}
+            {{ form.message.errors }}
+          </div>
+
+          <button type="submit" class="w-full bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-lg text-label-lg py-3.5 rounded-full font-bold shadow-md hover:shadow-xl transition-all cursor-pointer">
+            Send Message to Concierge
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

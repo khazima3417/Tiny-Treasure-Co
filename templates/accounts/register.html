@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-gutter-mobile py-space-xl">
+  <div class="bg-surface-container-lowest p-space-lg lg:p-space-xl rounded-2xl shadow-xl border border-outline-variant/30">
+    <div class="text-center mb-space-lg">
+      <div class="w-12 h-12 rounded-full bg-primary-fixed text-primary flex items-center justify-center mx-auto mb-space-sm">
+        <span class="material-symbols-outlined text-[24px]">person_add</span>
+      </div>
+      <h1 class="font-headline-sm text-headline-sm text-on-surface">Join Tiny Treasure Co.</h1>
+      <p class="font-body-sm text-on-surface-variant mt-1">Create an account for personalized gifting & order updates.</p>
+    </div>
+
+    {% if form.non_field_errors %}
+      <div class="p-space-sm bg-error-container text-on-error-container rounded-xl text-body-sm mb-space-md">
+        {% for error in form.non_field_errors %}
+          <p>{{ error }}</p>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <form method="POST" action="{% url 'register' %}" class="space-y-space-md">
+      {% csrf_token %}
+
+      <div>
+        <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_full_name">Full Name</label>
+        {{ form.full_name }}
+        {{ form.full_name.errors }}
+      </div>
+
+      <div>
+        <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_username">Username</label>
+        {{ form.username }}
+        {{ form.username.errors }}
+      </div>
+
+      <div>
+        <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_email">Email Address</label>
+        {{ form.email }}
+        {{ form.email.errors }}
+      </div>
+
+      <div>
+        <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_phone">Phone Number (Pakistan)</label>
+        {{ form.phone }}
+        {{ form.phone.errors }}
+      </div>
+
+      <div>
+        <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_password">Password</label>
+        {{ form.password }}
+        {{ form.password.errors }}
+      </div>
+
+      <div>
+        <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_confirm_password">Confirm Password</label>
+        {{ form.confirm_password }}
+        {{ form.confirm_password.errors }}
+      </div>
+
+      <button type="submit" class="w-full bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-lg text-label-lg py-3 rounded-full font-bold shadow-md hover:shadow-xl transition-all cursor-pointer">
+        Register Account
+      </button>
+    </form>
+
+    <div class="mt-space-lg pt-space-md border-t border-surface-container text-center text-body-sm text-on-surface-variant">
+      <span>Already have an account? </span>
+      <a href="{% url 'login' %}" class="font-bold text-primary hover:underline">Sign in</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

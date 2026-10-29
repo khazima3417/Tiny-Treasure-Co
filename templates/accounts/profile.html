@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-[1320px] mx-auto px-gutter-mobile lg:px-margin py-space-xl">
+  <div class="flex flex-col md:flex-row md:items-center justify-between gap-space-md mb-space-xl">
+    <div>
+      <span class="font-label-caps text-label-caps uppercase tracking-widest text-primary font-bold">Atelier Account</span>
+      <h1 class="font-headline-xl text-headline-xl text-on-surface">Welcome, {{ customer.full_name|default:user.username }}</h1>
+      <p class="font-body-md text-on-surface-variant">{{ user.email }} • Member since {{ user.date_joined|date:"M Y" }}</p>
+    </div>
+    <div class="flex items-center gap-space-sm">
+      <a href="{% url 'logout' %}" class="bg-surface-container-high hover:bg-error-container hover:text-on-error-container text-on-surface px-6 py-2.5 rounded-full font-label-md font-semibold transition-colors">
+        Sign Out
+      </a>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl">
+    <!-- Customer Info Card -->
+    <div class="lg:col-span-4 space-y-space-md">
+      <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm border border-outline-variant/30">
+        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-space-sm">Customer Profile</h2>
+        <div class="space-y-3 font-body-sm text-on-surface-variant">
+          <div>
+            <span class="font-label-caps uppercase text-secondary block">Full Name:</span>
+            <span class="font-semibold text-on-surface text-base">{{ customer.full_name }}</span>
+          </div>
+          <div>
+            <span class="font-label-caps uppercase text-secondary block">Phone:</span>
+            <span class="font-semibold text-on-surface">{{ customer.phone|default:"Not specified" }}</span>
+          </div>
+          <div>
+            <span class="font-label-caps uppercase text-secondary block">Default Address:</span>
+            <span class="font-semibold text-on-surface">{{ customer.address|default:"None saved yet" }}</span>
+          </div>
+          <div>
+            <span class="font-label-caps uppercase text-secondary block">City:</span>
+            <span class="font-semibold text-on-surface">{{ customer.city|default:"Islamabad" }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order History -->
+    <div class="lg:col-span-8">
+      <div class="bg-surface-container-lowest p-space-lg lg:p-space-xl rounded-2xl shadow-sm border border-outline-variant/30">
+        <h2 class="font-headline-sm text-headline-sm text-on-surface mb-space-md">Your Order History</h2>
+
+        {% if orders %}
+          <div class="space-y-space-md">
+            {% for ord in orders %}
+              <div class="p-space-md bg-surface-container-low rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-space-sm">
+                <div>
+                  <div class="flex items-center gap-2">
+                    <span class="font-mono font-bold text-primary">{{ ord.order_number }}</span>
+                    <span class="bg-primary-fixed text-on-primary-fixed text-xs px-2 py-0.5 rounded-full font-label-caps font-semibold">
+                      {{ ord.get_status_display }}
+                    </span>
+                  </div>
+                  <p class="font-body-sm text-on-surface-variant mt-1">
+                    Ordered for: <strong class="text-on-surface">{{ ord.recipient_name }}</strong> ({{ ord.recipient_city }}) • {{ ord.created_at|date:"d M Y" }}
+                  </p>
+                  <p class="font-body-sm text-xs text-secondary mt-0.5">
+                    Payment: {{ ord.get_payment_method_display }}
+                  </p>
+                </div>
+
+                <div class="flex items-center gap-space-md">
+                  <div class="text-right">
+                    <span class="font-label-lg font-bold text-on-surface">PKR {{ ord.total_price|floatformat:0 }}</span>
+                    <span class="text-xs text-on-surface-variant block">{{ ord.items.count }} item{{ ord.items.count|pluralize }}</span>
+                  </div>
+                  <a href="{% url 'order_confirmation' ord.order_number %}" class="bg-surface-container hover:bg-primary hover:text-on-primary px-4 py-1.5 rounded-full font-label-md text-xs font-semibold transition-colors">
+                    Receipt
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-10">
+            <span class="material-symbols-outlined text-[40px] text-primary/60">inventory_2</span>
+            <p class="font-body-md text-on-surface font-semibold mt-2">No orders placed yet.</p>
+            <p class="font-body-sm text-on-surface-variant mt-1">Curate your first bespoke gift hamper today!</p>
+            <a href="{% url 'shop' %}" class="inline-block mt-4 bg-primary text-on-primary px-6 py-2 rounded-full font-label-md font-semibold">
+              Explore Catalog
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

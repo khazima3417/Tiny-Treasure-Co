@@ -1,0 +1,546 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="flex flex-col w-full">
+  <!-- Interactive Step Bar & Header -->
+  <section class="w-full bg-surface-container-low px-gutter-mobile lg:px-margin py-space-lg">
+    <div class="max-w-[1320px] mx-auto">
+      <nav aria-label="Breadcrumb" class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md mb-space-sm">
+        <a class="hover:text-primary transition-colors" href="{% url 'home' %}">Home</a>
+        <span class="material-symbols-outlined text-[14px]">chevron_right</span>
+        <span class="text-primary font-semibold">Customize Your Box</span>
+      </nav>
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-space-md">
+        <div>
+          <span class="font-label-caps text-label-caps uppercase tracking-widest text-primary font-bold">Atelier Bespoke Service</span>
+          <h1 class="font-headline-xl text-headline-xl text-on-surface mt-space-xs">Build Your Bespoke Gift Box</h1>
+          <p class="font-body-md text-body-md text-on-surface-variant mt-space-xs max-w-2xl">
+            Select your occasion, rigid keepsake presentation, artisanal treasures, and a deckle-edged wax-sealed calligraphy card.
+          </p>
+        </div>
+        <div class="flex items-center gap-space-sm bg-surface-container-lowest px-space-md py-space-sm rounded-full shadow-sm">
+          <div class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></div>
+          <span class="font-label-md text-label-md text-on-surface">Live Atelier Sync • Hand-Packed in 24h</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Customizer Body -->
+  <section class="w-full px-gutter-mobile lg:px-margin py-space-xl">
+    <div class="max-w-[1320px] mx-auto">
+      <form action="{% url 'add_custom_box' %}" method="POST" id="customizer-form">
+        {% csrf_token %}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-xl items-start">
+          <!-- Left Customization Controls (Cols 7) -->
+          <div class="lg:col-span-7 space-y-space-xl">
+
+            <!-- STEP 1: OCCASION -->
+            <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm">
+              <div class="flex items-center justify-between mb-space-md">
+                <div class="flex items-center gap-space-sm">
+                  <span class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container font-label-caps text-label-caps flex items-center justify-center font-bold">1</span>
+                  <h2 class="font-headline-sm text-headline-sm text-on-surface">Select The Occasion</h2>
+                </div>
+                <span class="font-label-caps text-label-caps uppercase text-secondary tracking-wider">Required</span>
+              </div>
+
+              <input type="hidden" name="occasion" id="selected-occasion-input" value="Birthday"/>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-space-sm" id="occasion-selector">
+                <button class="occasion-chip active text-left p-space-md rounded-xl bg-surface-container-low transition-all ring-2 ring-primary" data-occasion="Birthday" onclick="chooseOccasion('Birthday', this)" type="button">
+                  <div class="flex items-center justify-between">
+                    <span class="material-symbols-outlined text-primary text-[22px]">cake</span>
+                    <span class="material-symbols-outlined text-primary text-[18px] occasion-check">check_circle</span>
+                  </div>
+                  <div class="font-label-lg text-label-lg text-on-surface mt-space-sm">Birthday</div>
+                  <div class="font-body-sm text-body-sm text-on-surface-variant">Celebration &amp; Wishes</div>
+                </button>
+
+                <button class="occasion-chip text-left p-space-md rounded-xl bg-surface-container-low transition-all" data-occasion="Best Friend" onclick="chooseOccasion('Best Friend', this)" type="button">
+                  <div class="flex items-center justify-between">
+                    <span class="material-symbols-outlined text-secondary text-[22px]">diversity_1</span>
+                    <span class="material-symbols-outlined text-transparent text-[18px] occasion-check">check_circle</span>
+                  </div>
+                  <div class="font-label-lg text-label-lg text-on-surface mt-space-sm">Best Friend</div>
+                  <div class="font-body-sm text-body-sm text-on-surface-variant">Galentines &amp; Love</div>
+                </button>
+
+                <button class="occasion-chip text-left p-space-md rounded-xl bg-surface-container-low transition-all" data-occasion="Anniversary" onclick="chooseOccasion('Anniversary', this)" type="button">
+                  <div class="flex items-center justify-between">
+                    <span class="material-symbols-outlined text-secondary text-[22px]">favorite</span>
+                    <span class="material-symbols-outlined text-transparent text-[18px] occasion-check">check_circle</span>
+                  </div>
+                  <div class="font-label-lg text-label-lg text-on-surface mt-space-sm">Anniversary</div>
+                  <div class="font-body-sm text-body-sm text-on-surface-variant">Romance &amp; Forever</div>
+                </button>
+
+                <button class="occasion-chip text-left p-space-md rounded-xl bg-surface-container-low transition-all" data-occasion="Graduation" onclick="chooseOccasion('Graduation', this)" type="button">
+                  <div class="flex items-center justify-between">
+                    <span class="material-symbols-outlined text-secondary text-[22px]">school</span>
+                    <span class="material-symbols-outlined text-transparent text-[18px] occasion-check">check_circle</span>
+                  </div>
+                  <div class="font-label-lg text-label-lg text-on-surface mt-space-sm">Graduation</div>
+                  <div class="font-body-sm text-body-sm text-on-surface-variant">Milestones &amp; Pride</div>
+                </button>
+
+                <button class="occasion-chip text-left p-space-md rounded-xl bg-surface-container-low transition-all sm:col-span-2" data-occasion="Self-Care &amp; Healing" onclick="chooseOccasion('Self-Care & Healing', this)" type="button">
+                  <div class="flex items-center justify-between">
+                    <span class="material-symbols-outlined text-secondary text-[22px]">spa</span>
+                    <span class="material-symbols-outlined text-transparent text-[18px] occasion-check">check_circle</span>
+                  </div>
+                  <div class="font-label-lg text-label-lg text-on-surface mt-space-sm">Self-Care &amp; Healing</div>
+                  <div class="font-body-sm text-body-sm text-on-surface-variant">Nourish, pamper, and unhurried wellness</div>
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 2: BOX STYLE & COLOR -->
+            <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm">
+              <div class="flex items-center justify-between mb-space-md">
+                <div class="flex items-center gap-space-sm">
+                  <span class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container font-label-caps text-label-caps flex items-center justify-center font-bold">2</span>
+                  <h2 class="font-headline-sm text-headline-sm text-on-surface">Keepsake Box Finish</h2>
+                </div>
+                <span class="font-body-sm text-body-sm text-on-surface-variant">Includes luxury magnetic lid &amp; foil stamping</span>
+              </div>
+
+              <input type="hidden" name="box_finish_id" id="selected-finish-id" value="{% if box_finishes.first %}{{ box_finishes.first.id }}{% else %}1{% endif %}"/>
+              <input type="hidden" name="box_finish_name" id="selected-finish-name" value="Blush Silk"/>
+              <input type="hidden" name="box_finish_price" id="selected-finish-price" value="499"/>
+
+              <div class="grid grid-cols-2 md:grid-cols-4 gap-space-md" id="box-finish-selector">
+                {% for finish in box_finishes %}
+                  <div class="box-finish-card {% if forloop.first %}active ring-2 ring-primary{% else %}opacity-80 hover:opacity-100{% endif %} cursor-pointer p-space-md rounded-xl bg-surface-container-low text-center transition-all" data-id="{{ finish.id }}" data-box-name="{{ finish.name }}" data-box-price="{{ finish.price|floatformat:0 }}" onclick="chooseFinish('{{ finish.id }}', '{{ finish.name }}', {{ finish.price|floatformat:0 }}, this)">
+                    <div class="w-full h-20 rounded-lg shadow-inner mb-space-sm flex items-center justify-center" style="background-color: {{ finish.color_hex }};">
+                      <span class="font-headline-sm text-[16px] italic" style="color: {{ finish.text_color }};">The Gift Edit</span>
+                    </div>
+                    <div class="font-label-lg text-label-lg text-on-surface">{{ finish.name }}</div>
+                    <div class="font-label-md text-label-md text-primary font-bold mt-space-xs">PKR {{ finish.price|floatformat:0 }}</div>
+                    <div class="mt-space-xs font-label-caps text-label-caps uppercase text-primary finish-badge">{% if forloop.first %}Selected{% else %}Select{% endif %}</div>
+                  </div>
+                {% empty %}
+                  <div class="box-finish-card active ring-2 ring-primary cursor-pointer p-space-md rounded-xl bg-surface-container-low text-center transition-all" data-id="1" data-box-name="Blush Silk" data-box-price="499" onclick="chooseFinish('1', 'Blush Silk', 499, this)">
+                    <div class="w-full h-20 rounded-lg bg-[#f6dadc] shadow-inner mb-space-sm flex items-center justify-center">
+                      <span class="font-headline-sm text-[16px] text-[#825057] italic">The Gift Edit</span>
+                    </div>
+                    <div class="font-label-lg text-label-lg text-on-surface">Blush Silk</div>
+                    <div class="font-label-md text-label-md text-primary font-bold mt-space-xs">PKR 499</div>
+                    <div class="mt-space-xs font-label-caps text-label-caps uppercase text-primary finish-badge">Selected</div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- STEP 3: BASE PACKAGE / TIER -->
+            <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm">
+              <div class="flex items-center justify-between mb-space-md">
+                <div class="flex items-center gap-space-sm">
+                  <span class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container font-label-caps text-label-caps flex items-center justify-center font-bold">3</span>
+                  <h2 class="font-headline-sm text-headline-sm text-on-surface">Curation Format</h2>
+                </div>
+                <span class="font-label-caps text-label-caps uppercase text-secondary">Step 3 of 5</span>
+              </div>
+
+              <input type="hidden" name="tier_name" id="selected-tier-input" value="Classic Edit"/>
+              <input type="hidden" name="tier_price" id="selected-tier-price" value="1999"/>
+
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-space-md" id="tier-selector">
+                <div class="tier-card cursor-pointer p-space-md rounded-xl bg-surface-container-low transition-all" data-tier="Mini Delight" data-price="999" onclick="chooseTier('Mini Delight', 999, 'Essential', this)">
+                  <div class="flex items-center justify-between">
+                    <span class="font-label-caps text-label-caps uppercase text-secondary font-bold">Essential</span>
+                    <span class="material-symbols-outlined text-transparent text-[18px] tier-check">check_circle</span>
+                  </div>
+                  <div class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Mini Delight</div>
+                  <div class="font-label-lg text-label-lg text-primary font-bold mt-space-xs">PKR 999 base</div>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Includes 2 curated items + standard ribbon.</p>
+                </div>
+
+                <div class="tier-card active ring-2 ring-primary cursor-pointer p-space-md rounded-xl bg-surface-container-high transition-all shadow-sm" data-tier="Classic Edit" data-price="1999" onclick="chooseTier('Classic Edit', 1999, 'Most Popular', this)">
+                  <div class="flex items-center justify-between">
+                    <span class="font-label-caps text-label-caps uppercase text-primary font-bold">Most Popular</span>
+                    <span class="material-symbols-outlined text-primary text-[18px] tier-check">check_circle</span>
+                  </div>
+                  <div class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Classic Edit</div>
+                  <div class="font-label-lg text-label-lg text-primary font-bold mt-space-xs">PKR 1,999 base</div>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Includes 4-5 curated items + satin wrap + keepsake tag.</p>
+                </div>
+
+                <div class="tier-card cursor-pointer p-space-md rounded-xl bg-surface-container-low transition-all" data-tier="Luxury Keepsake" data-price="3499" onclick="chooseTier('Luxury Keepsake', 3499, 'Deluxe Atelier', this)">
+                  <div class="flex items-center justify-between">
+                    <span class="font-label-caps text-label-caps uppercase text-secondary font-bold">Deluxe Atelier</span>
+                    <span class="material-symbols-outlined text-transparent text-[18px] tier-check">check_circle</span>
+                  </div>
+                  <div class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Luxury Keepsake</div>
+                  <div class="font-label-lg text-label-lg text-primary font-bold mt-space-xs">PKR 3,499 base</div>
+                  <p class="font-body-sm text-body-sm text-on-surface-variant mt-space-xs">Full deluxe suite, custom engraved pen, extra florals.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 4: ITEM CHECKLIST -->
+            <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-xs mb-space-md">
+                <div class="flex items-center gap-space-sm">
+                  <span class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container font-label-caps text-label-caps flex items-center justify-center font-bold">4</span>
+                  <h2 class="font-headline-sm text-headline-sm text-on-surface">Pick Gift Items To Include</h2>
+                </div>
+                <div class="flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md">
+                  <span>Selected:</span>
+                  <span class="font-bold text-primary" id="selected-count-badge">4 items</span>
+                </div>
+              </div>
+
+              <!-- Item selection cards grid -->
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md" id="item-grid">
+                {% for item in atelier_items %}
+                  <div class="gift-item-card {% if forloop.counter <= 4 %}active bg-surface-container ring-1 ring-primary/40{% else %}bg-surface-container-low opacity-85 hover:opacity-100{% endif %} cursor-pointer p-space-md rounded-xl flex items-center justify-between gap-space-md transition-all" data-id="{{ item.id }}" data-price="{{ item.price|floatformat:0 }}" data-name="{{ item.name }}" onclick="toggleItem(this)">
+                    <input type="checkbox" name="item_ids" value="{{ item.id }}" class="hidden item-checkbox" {% if forloop.counter <= 4 %}checked{% endif %}/>
+                    <div class="flex items-center gap-space-sm min-w-0">
+                      {% if item.image_url %}
+                        <img class="w-14 h-14 object-cover rounded-lg flex-shrink-0" src="{{ item.image_url }}" alt="{{ item.name }}"/>
+                      {% else %}
+                        <div class="w-14 h-14 rounded-lg bg-primary-fixed flex items-center justify-center text-primary flex-shrink-0">
+                          <span class="material-symbols-outlined text-[24px]">redeem</span>
+                        </div>
+                      {% endif %}
+                      <div class="truncate">
+                        <h3 class="font-label-lg text-label-lg text-on-surface truncate">{{ item.name }}</h3>
+                        <div class="font-body-sm text-body-sm text-primary font-semibold">+PKR {{ item.price|floatformat:0 }}</div>
+                      </div>
+                    </div>
+                    <div class="w-7 h-7 rounded-full {% if forloop.counter <= 4 %}bg-primary text-on-primary{% else %}bg-surface-container-highest text-on-surface-variant{% endif %} flex items-center justify-center flex-shrink-0 item-toggle-icon">
+                      <span class="material-symbols-outlined text-[18px]">{% if forloop.counter <= 4 %}check{% else %}add{% endif %}</span>
+                    </div>
+                  </div>
+                {% empty %}
+                  <p class="text-on-surface-variant">Atelier items loading...</p>
+                {% endfor %}
+              </div>
+            </div>
+
+            <!-- STEP 5: RECIPIENT & PERSONALIZATION -->
+            <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm">
+              <div class="flex items-center justify-between mb-space-md">
+                <div class="flex items-center gap-space-sm">
+                  <span class="w-7 h-7 rounded-full bg-primary-container text-on-primary-container font-label-caps text-label-caps flex items-center justify-center font-bold">5</span>
+                  <h2 class="font-headline-sm text-headline-sm text-on-surface">Card Calligraphy &amp; Embellishments</h2>
+                </div>
+                <span class="font-label-md text-label-md text-primary font-semibold">Free Atelier Service</span>
+              </div>
+
+              <div class="space-y-space-md">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md">
+                  <div>
+                    <label class="block font-label-md text-label-md text-on-surface mb-space-xs" for="input-recipient">Recipient's Name (for Card Header)</label>
+                    <input class="w-full bg-surface-container-low px-space-md py-space-sm rounded-full text-on-surface font-body-md focus:bg-surface-container focus:outline-none transition-all placeholder:text-secondary/50" id="input-recipient" name="recipient_name" oninput="document.getElementById('preview-recipient').innerText = this.value || 'Loved One'" placeholder="e.g. Mahnoor" type="text" value="Areeba"/>
+                  </div>
+                  <div>
+                    <label class="block font-label-md text-label-md text-on-surface mb-space-xs" for="input-sender">Sender's Name (Optional)</label>
+                    <input class="w-full bg-surface-container-low px-space-md py-space-sm rounded-full text-on-surface font-body-md focus:bg-surface-container focus:outline-none transition-all placeholder:text-secondary/50" id="input-sender" name="sender_name" oninput="document.getElementById('preview-sender').innerText = this.value || 'Your Friend'" placeholder="e.g. With love from Sara" type="text" value="Sana"/>
+                  </div>
+                </div>
+
+                <div>
+                  <div class="flex items-center justify-between mb-space-xs">
+                    <label class="font-label-md text-label-md text-on-surface" for="input-message">Handwritten Message on Deckle Paper</label>
+                    <span class="font-label-caps text-label-caps text-secondary" id="char-counter">142 / 250 characters</span>
+                  </div>
+                  <textarea class="w-full bg-surface-container-low p-space-md rounded-2xl text-on-surface font-body-md focus:bg-surface-container focus:outline-none transition-all placeholder:text-secondary/50 resize-none" id="input-message" maxlength="250" name="card_message" oninput="updateMessagePreview(this.value)" placeholder="Write your heartfelt note here..." rows="3">Happy Birthday to my favourite person in the world! Wishing you endless laughter, peace, and dreams come true. Love you always!</textarea>
+                </div>
+
+                <!-- Wax Seal & Ribbon Palette -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md pt-space-xs">
+                  <div>
+                    <span class="block font-label-md text-label-md text-on-surface mb-space-xs">Wax Seal Accent Color</span>
+                    <input type="hidden" name="seal_color" id="selected-seal-input" value="Antique Rose"/>
+                    <div class="flex items-center gap-space-sm" id="wax-seal-selector">
+                      <button class="seal-btn active w-9 h-9 rounded-full bg-[#c88d94] flex items-center justify-center shadow-sm" data-seal="Antique Rose" data-seal-hex="#c88d94" onclick="selectWaxSeal('Antique Rose', '#c88d94', this)" type="button">
+                        <span class="material-symbols-outlined text-[16px] text-white">check</span>
+                      </button>
+                      <button class="seal-btn w-9 h-9 rounded-full bg-[#d4af37] flex items-center justify-center shadow-sm" data-seal="Pure Gold" data-seal-hex="#d4af37" onclick="selectWaxSeal('Pure Gold', '#d4af37', this)" type="button">
+                        <span class="material-symbols-outlined text-[16px] text-transparent">check</span>
+                      </button>
+                      <button class="seal-btn w-9 h-9 rounded-full bg-[#e3d7bf] flex items-center justify-center shadow-sm" data-seal="Champagne Pearlescent" data-seal-hex="#e3d7bf" onclick="selectWaxSeal('Champagne Pearlescent', '#e3d7bf', this)" type="button">
+                        <span class="material-symbols-outlined text-[16px] text-transparent">check</span>
+                      </button>
+                      <button class="seal-btn w-9 h-9 rounded-full bg-[#697a6e] flex items-center justify-center shadow-sm" data-seal="Sage Forest" data-seal-hex="#697a6e" onclick="selectWaxSeal('Sage Forest', '#697a6e', this)" type="button">
+                        <span class="material-symbols-outlined text-[16px] text-transparent">check</span>
+                      </button>
+                    </div>
+                    <span class="font-body-sm text-body-sm text-secondary block mt-space-xs" id="seal-name-display">Antique Rose (Hand-Stamped)</span>
+                  </div>
+
+                  <div>
+                    <span class="block font-label-md text-label-md text-on-surface mb-space-xs">Hand-Tied Ribbon Material</span>
+                    <select class="w-full bg-surface-container-low px-space-md py-space-sm rounded-full text-on-surface font-body-md focus:bg-surface-container focus:outline-none" id="ribbon-selector" name="ribbon_material">
+                      <option value="Double-faced Satin Rose">Double-faced Satin Rose (Signature)</option>
+                      <option value="Grosgrain Champagne Gold">Grosgrain Champagne Gold</option>
+                      <option value="Soft Velvet Mauve">Soft Velvet Mauve (+Complimentary)</option>
+                      <option value="Raw Edge Botanical Chiffon">Raw Edge Botanical Chiffon</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Live Card Preview & Pricing Sticky Summary (Cols 5) -->
+          <div class="lg:col-span-5 space-y-space-md lg:sticky lg:top-24">
+            <!-- Live Interactive Recipient Card Preview -->
+            <div class="bg-surface-container-low p-space-md rounded-2xl shadow-sm relative overflow-hidden">
+              <div class="flex items-center justify-between mb-space-sm">
+                <span class="font-label-caps text-label-caps uppercase tracking-wider text-primary font-bold flex items-center gap-space-xs">
+                  <span class="material-symbols-outlined text-[16px]">draw</span>
+                  Deckle-Edge Calligraphy Preview
+                </span>
+                <span class="font-body-sm text-body-sm text-secondary">300gsm Cotton Rag</span>
+              </div>
+
+              <!-- Simulated Artisanal Card -->
+              <div class="bg-[#fcfaf5] p-space-lg rounded-xl shadow-[0_8px_20px_rgba(200,141,148,0.12)] relative transition-all">
+                <div class="text-center pb-space-sm">
+                  <span class="font-headline-sm text-headline-sm text-primary italic block tracking-wide">A Special Gift For You</span>
+                  <span class="font-headline-md text-headline-md text-on-surface font-normal block mt-space-xs" id="preview-recipient">Areeba</span>
+                </div>
+
+                <!-- Wax seal visual badge centered -->
+                <div class="flex justify-center my-space-xs">
+                  <div class="w-11 h-11 rounded-full bg-[#c88d94] flex items-center justify-center shadow-md transform rotate-6 transition-colors" id="preview-seal-badge">
+                    <div class="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center text-white">
+                      <span class="material-symbols-outlined text-[18px]">verified</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-space-sm text-center">
+                  <p class="font-body-md text-body-md text-on-surface-variant italic leading-relaxed px-space-xs" id="preview-message-body">
+                    "Happy Birthday to my favourite person in the world! Wishing you endless laughter, peace, and dreams come true. Love you always!"
+                  </p>
+                  <p class="font-headline-sm text-headline-sm text-primary mt-space-sm italic">
+                    With love, <span class="font-semibold text-on-surface not-italic" id="preview-sender">Sana</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Inset Box Visual Snapshot -->
+              <div class="mt-space-md p-space-sm bg-surface-container rounded-xl flex items-center gap-space-sm">
+                <img class="w-16 h-16 object-cover rounded-lg flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCAyK0wCE5PAWFc9UpuxEePh9v6xlGwqd0MeP7JEX7V05NsdtWRs5eejp6bXHQn9B9LLIfajUM7JCWFhT80DjB41M6-Mfryi3H82Ao56jySbfuJWrtMuzwyYhhgCCrqRcmrDAz-SekB_q13nRpMyB4itGLyPgY2myG2Cw7vNrzwlOP7FANQ3yt02S19vGA95BBJ_E4wLqg2yz0Pu042AZRKG8U4KCAAA4Ps1pr4wbCpDKzcSH-m4qmt" alt="Box Presentation"/>
+                <div class="flex-1 min-w-0">
+                  <span class="font-label-caps text-label-caps uppercase text-primary font-bold">Selected Assembly</span>
+                  <div class="font-label-lg text-label-lg text-on-surface truncate" id="preview-box-name">Blush Silk Rigid Box</div>
+                  <div class="font-body-sm text-body-sm text-on-surface-variant truncate">Packed with ivory paper fill &amp; delicate dried botanicals</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Sticky Dynamic Order Summary & Totals -->
+            <div class="bg-surface-container-lowest p-space-lg rounded-2xl shadow-sm space-y-space-md">
+              <div>
+                <span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary font-bold">Order Breakdown</span>
+                <h3 class="font-headline-sm text-headline-sm text-on-surface mt-space-xs">Custom Box Investment</h3>
+              </div>
+
+              <div class="space-y-space-sm text-body-sm text-on-surface-variant divide-y-0">
+                <div class="flex justify-between items-center py-1">
+                  <span>Occasion Selection</span>
+                  <span class="font-semibold text-on-surface" id="summary-occasion">Birthday</span>
+                </div>
+                <div class="flex justify-between items-center py-1">
+                  <span id="summary-tier-name">Base Tier (Classic Edit)</span>
+                  <span class="font-semibold text-on-surface" id="summary-tier-price">PKR 1,999</span>
+                </div>
+                <div class="flex justify-between items-center py-1">
+                  <span id="summary-finish-name">Box Presentation (Blush Silk)</span>
+                  <span class="font-semibold text-on-surface" id="summary-finish-price">PKR 499</span>
+                </div>
+                <div class="flex justify-between items-center py-1">
+                  <span>Add-on Curated Treasures (<span id="summary-items-count">4</span> items)</span>
+                  <span class="font-semibold text-on-surface" id="summary-items-price">PKR 1,520</span>
+                </div>
+                <div class="flex justify-between items-center py-1">
+                  <span>Wax Seal &amp; Calligraphy Message</span>
+                  <span class="font-bold text-primary uppercase text-label-md">Complimentary</span>
+                </div>
+                <div class="flex justify-between items-center py-1">
+                  <span>Express Courier Delivery (Pakistan)</span>
+                  <span class="font-semibold text-on-surface" id="summary-delivery-charge">FREE (Above Rs 3,000)</span>
+                </div>
+              </div>
+
+              <div class="bg-surface-container-low p-space-md rounded-xl flex items-center justify-between">
+                <div>
+                  <span class="font-label-caps text-label-caps uppercase tracking-wider text-secondary font-semibold">Total Amount</span>
+                  <div class="font-headline-md text-headline-md text-primary font-bold" id="total-price-display">PKR 4,018</div>
+                </div>
+                <div class="text-right">
+                  <span class="inline-flex items-center gap-1 bg-surface-container text-on-surface px-space-sm py-0.5 rounded-full font-label-md text-label-md">
+                    <span class="material-symbols-outlined text-[14px] text-primary">local_shipping</span> 2–3 Days
+                  </span>
+                </div>
+              </div>
+
+              <!-- Primary CTAs -->
+              <div class="space-y-space-sm pt-space-xs">
+                <button class="w-full bg-primary hover:bg-on-primary-fixed-variant text-on-primary py-space-sm px-space-md rounded-full font-label-lg text-label-lg font-semibold shadow-md transition-all flex items-center justify-center gap-space-xs transform hover:scale-[1.01]" id="btn-add-cart" type="submit">
+                  <span class="material-symbols-outlined text-[20px]">shopping_bag</span>
+                  <span id="btn-cart-label">Add Custom Box to Cart</span>
+                </button>
+              </div>
+
+              <!-- Atelier Guarantees -->
+              <div class="grid grid-cols-3 gap-space-xs text-center pt-space-sm">
+                <div class="p-space-xs bg-surface-container-low rounded-lg">
+                  <span class="material-symbols-outlined text-primary text-[20px] block mx-auto">schedule</span>
+                  <span class="font-label-caps text-label-caps text-on-surface block mt-1">24h Packing</span>
+                </div>
+                <div class="p-space-xs bg-surface-container-low rounded-lg">
+                  <span class="material-symbols-outlined text-primary text-[20px] block mx-auto">security</span>
+                  <span class="font-label-caps text-label-caps text-on-surface block mt-1">Damage-Free</span>
+                </div>
+                <div class="p-space-xs bg-surface-container-low rounded-lg">
+                  <span class="material-symbols-outlined text-primary text-[20px] block mx-auto">favorite</span>
+                  <span class="font-label-caps text-label-caps text-on-surface block mt-1">100% Love</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  let currentTierPrice = 1999;
+  let currentFinishPrice = 499;
+
+  function recalculateCustomBox() {
+    let itemsTotal = 0;
+    let selectedCount = 0;
+    document.querySelectorAll('.gift-item-card.active').forEach(card => {
+      itemsTotal += parseFloat(card.dataset.price || 0);
+      selectedCount++;
+    });
+
+    document.getElementById('summary-items-count').innerText = selectedCount;
+    document.getElementById('selected-count-badge').innerText = `${selectedCount} item${selectedCount === 1 ? '' : 's'}`;
+    document.getElementById('summary-items-price').innerText = `PKR ${itemsTotal.toLocaleString()}`;
+
+    const subtotal = currentTierPrice + currentFinishPrice + itemsTotal;
+    const isFreeDelivery = subtotal >= 3000;
+    const shipping = isFreeDelivery ? 0 : 250;
+    const total = subtotal + shipping;
+
+    document.getElementById('summary-delivery-charge').innerText = isFreeDelivery ? 'FREE (Above Rs 3,000)' : 'PKR 250';
+    document.getElementById('total-price-display').innerText = `PKR ${total.toLocaleString()}`;
+    document.getElementById('btn-cart-label').innerText = `Add Custom Box to Cart — PKR ${total.toLocaleString()}`;
+  }
+
+  function chooseOccasion(name, btn) {
+    document.getElementById('selected-occasion-input').value = name;
+    document.getElementById('summary-occasion').innerText = name;
+    document.querySelectorAll('.occasion-chip').forEach(b => {
+      b.classList.remove('ring-2', 'ring-primary', 'active');
+      b.querySelector('.occasion-check').classList.add('text-transparent');
+      b.querySelector('.occasion-check').classList.remove('text-primary');
+    });
+    btn.classList.add('ring-2', 'ring-primary', 'active');
+    btn.querySelector('.occasion-check').classList.remove('text-transparent');
+    btn.querySelector('.occasion-check').classList.add('text-primary');
+  }
+
+  function chooseFinish(id, name, price, card) {
+    currentFinishPrice = parseFloat(price);
+    document.getElementById('selected-finish-id').value = id;
+    document.getElementById('selected-finish-name').value = name;
+    document.getElementById('selected-finish-price').value = price;
+    document.getElementById('preview-box-name').innerText = `${name} Rigid Box`;
+    document.getElementById('summary-finish-name').innerText = `Box Presentation (${name})`;
+    document.getElementById('summary-finish-price').innerText = `PKR ${price.toLocaleString()}`;
+
+    document.querySelectorAll('.box-finish-card').forEach(c => {
+      c.classList.remove('active', 'ring-2', 'ring-primary');
+      c.classList.add('opacity-80');
+      const badge = c.querySelector('.finish-badge');
+      if (badge) badge.innerText = 'Select';
+    });
+    card.classList.add('active', 'ring-2', 'ring-primary');
+    card.classList.remove('opacity-80');
+    const badge = card.querySelector('.finish-badge');
+    if (badge) badge.innerText = 'Selected';
+
+    recalculateCustomBox();
+  }
+
+  function chooseTier(name, price, badge, card) {
+    currentTierPrice = parseFloat(price);
+    document.getElementById('selected-tier-input').value = name;
+    document.getElementById('selected-tier-price').value = price;
+    document.getElementById('summary-tier-name').innerText = `Base Tier (${name})`;
+    document.getElementById('summary-tier-price').innerText = `PKR ${price.toLocaleString()}`;
+
+    document.querySelectorAll('.tier-card').forEach(c => {
+      c.classList.remove('active', 'ring-2', 'ring-primary', 'bg-surface-container-high', 'shadow-sm');
+      c.classList.add('bg-surface-container-low');
+      const chk = c.querySelector('.tier-check');
+      if (chk) chk.classList.replace('text-primary', 'text-transparent');
+    });
+    card.classList.add('active', 'ring-2', 'ring-primary', 'bg-surface-container-high', 'shadow-sm');
+    card.classList.remove('bg-surface-container-low');
+    const chk = card.querySelector('.tier-check');
+    if (chk) chk.classList.replace('text-transparent', 'text-primary');
+
+    recalculateCustomBox();
+  }
+
+  function toggleItem(card) {
+    const chk = card.querySelector('.item-checkbox');
+    const iconContainer = card.querySelector('.item-toggle-icon');
+    const icon = iconContainer.querySelector('span');
+
+    if (card.classList.contains('active')) {
+      card.classList.remove('active', 'bg-surface-container', 'ring-1', 'ring-primary/40');
+      card.classList.add('bg-surface-container-low', 'opacity-85');
+      iconContainer.classList.replace('bg-primary', 'bg-surface-container-highest');
+      iconContainer.classList.replace('text-on-primary', 'text-on-surface-variant');
+      icon.innerText = 'add';
+      chk.checked = false;
+    } else {
+      card.classList.add('active', 'bg-surface-container', 'ring-1', 'ring-primary/40');
+      card.classList.remove('bg-surface-container-low', 'opacity-85');
+      iconContainer.classList.replace('bg-surface-container-highest', 'bg-primary');
+      iconContainer.classList.replace('text-on-surface-variant', 'text-on-primary');
+      icon.innerText = 'check';
+      chk.checked = true;
+    }
+    recalculateCustomBox();
+  }
+
+  function selectWaxSeal(name, hex, btn) {
+    document.getElementById('selected-seal-input').value = name;
+    document.getElementById('seal-name-display').innerText = `${name} (Hand-Stamped)`;
+    document.getElementById('preview-seal-badge').style.backgroundColor = hex;
+    document.querySelectorAll('.seal-btn').forEach(b => {
+      b.querySelector('span').classList.replace('text-white', 'text-transparent');
+    });
+    btn.querySelector('span').classList.replace('text-transparent', 'text-white');
+  }
+
+  function updateMessagePreview(text) {
+    const previewEl = document.getElementById('preview-message-body');
+    const counterEl = document.getElementById('char-counter');
+    if (previewEl) {
+      previewEl.innerText = text.length > 0 ? `"${text}"` : '"Your handwritten message appears here..."';
+    }
+    if (counterEl) {
+      counterEl.innerText = `${text.length} / 250 characters`;
+    }
+  }
+
+  // Initialize calculations on load
+  document.addEventListener('DOMContentLoaded', recalculateCustomBox);
+</script>
+{% endblock %}

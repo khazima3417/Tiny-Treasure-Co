@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-md mx-auto px-gutter-mobile py-space-xl">
+  <div class="bg-surface-container-lowest p-space-lg lg:p-space-xl rounded-2xl shadow-xl border border-outline-variant/30">
+    <div class="text-center mb-space-lg">
+      <div class="w-12 h-12 rounded-full bg-primary-fixed text-primary flex items-center justify-center mx-auto mb-space-sm">
+        <span class="material-symbols-outlined text-[24px]">lock</span>
+      </div>
+      <h1 class="font-headline-sm text-headline-sm text-on-surface">Sign In to Your Account</h1>
+      <p class="font-body-sm text-on-surface-variant mt-1">Access your saved addresses and track your bespoke orders.</p>
+    </div>
+
+    <form method="POST" action="{% url 'login' %}" class="space-y-space-md">
+      {% csrf_token %}
+
+      <div>
+        <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_username">Username or Email</label>
+        {{ form.username }}
+      </div>
+
+      <div>
+        <label class="block font-label-md text-label-md text-on-surface font-semibold mb-1" for="id_password">Password</label>
+        {{ form.password }}
+      </div>
+
+      <button type="submit" class="w-full bg-primary hover:bg-on-primary-fixed-variant text-on-primary font-label-lg text-label-lg py-3 rounded-full font-bold shadow-md hover:shadow-xl transition-all cursor-pointer">
+        Sign In
+      </button>
+    </form>
+
+    <div class="mt-space-lg pt-space-md border-t border-surface-container text-center text-body-sm text-on-surface-variant">
+      <span>New to Tiny Treasure Co.? </span>
+      <a href="{% url 'register' %}" class="font-bold text-primary hover:underline">Create an account</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
